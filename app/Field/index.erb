@@ -1,0 +1,27 @@
+<div data-role="page">
+
+	<div data-role="header" data-position="inline">
+    <h1>Fields</h1>
+    <a href="/app/Settings/index" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Options
+    </a>
+    <a href="/app/Field/new" class="ui-btn-right" data-icon="plus">
+      New
+    </a>
+	</div>
+
+  <div data-role="content">
+    <ul data-role="listview">
+      <% @fields.each do |field| %>
+      
+          <li>
+            <a href="/app/Field/edit/<%= field.object %>">
+              <%= field.FieldName %>
+            </a>
+          </li>
+      
+      <% end %>
+    </ul>
+  </div>
+
+</div>

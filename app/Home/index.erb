@@ -1,0 +1,59 @@
+<div data-role="page" data-url="/app/Home/index" id="homePage">
+  
+    <div data-role="header" data-position="inline">
+      <h1>Seed to Harvest</h1>
+    </div>
+  
+    <div data-role="content">
+         <% if @growingSeasonsCount < 1 %>
+         
+           <div style='margin-top: 25px; text-align: center;'>
+             No growing season records have been added.
+           </div>
+           <div style='margin-top: 25px; text-align: center;'>
+             <a href='/app/GrowingSeason/new'>
+               <input type='button' value='Add Record Folder' />
+             </a>
+           </div>
+         
+         <% else %>
+           
+           <div class="information-container ui-grid-a">
+             <div class="ui-block-a main">
+               <div id="selectedYearInfoDiv" style="margin-top:8px; margin-bottom: auto;">
+                 Viewing: <%= $memoryData.AppSettings.selectedSeasonYear %> Records
+               </div>
+             </div>
+             <div class="ui-block-b side">
+              <span class="btn-small">
+               <a href="/app/GrowingSeason/index">
+                 <button data-inline="true" data-theme="b" type='button'>Change</button>
+               </a>
+              </span>
+             </div>
+           </div>
+           <ul data-role="listview" data-inset="true">
+             <li>
+               <a href='/app/Crop'>Crop Records</a>
+             </li>
+             <li>
+               <a href="/app/FieldRecord">Field Records</a>
+             </li>
+             <li>
+               <a href="/app/Home/farmInfo">Farm Information</a>
+             </li>
+             <li>
+               <a href="/app/Report/reportHome">Reports</a>
+             </li>
+           </ul>
+           
+           <ul data-role="listview" data-inset="true">
+             <li>
+               <a href="/app/Settings/index" data-transition="slideup">Options</a>
+             </li>
+           </ul>
+               
+         <%end%>
+    </div>
+         
+</div>

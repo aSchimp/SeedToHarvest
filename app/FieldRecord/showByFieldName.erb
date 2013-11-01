@@ -1,0 +1,35 @@
+<div data-role="page" data-add-back-btn="false">
+
+  <div data-role="header" data-position="inline">
+    <h1><%= @fieldName %></h1>
+    <a href="<%= url_for :action => :index %>" class="ui-btn-left" data-icon="arrow-l" data-direction="reverse">
+      Fields
+    </a>
+    <a href="/app/FieldRecord/new/<%= @fieldName %>" class="ui-btn-right" data-icon="new">
+      New
+    </a>
+  </div>
+
+  <div data-role="content">
+    <ul data-role="listview">
+      <% @fieldrecords.each do |fieldRecord| %>
+        <li>
+          <a href="<%= url_for :action => :edit, :id => fieldRecord.object %>">
+            <h3>Section: <%= fieldRecord.Section %></h3>
+            <p>
+              <% if(fieldRecord.Description.length > 40) %>
+                <%= fieldRecord.Description[0,40] + "..." %>
+              <%else%>
+                <%= fieldRecord.Description %>
+              <%end%>
+            </p>
+            <div class="ui-li-aside" style="font-size: small;">
+              <%= Time.parse(fieldRecord.Date).strftime("%b %-d, %Y") %>
+            </div>
+          </a>
+        </li>
+      <%end%>
+    </ul>
+  </div>
+
+</div>

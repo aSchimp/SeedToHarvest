@@ -1,0 +1,31 @@
+#sdk: "/opt/resque/sdks/rhodes-3.2.3"
+sdkversion: 3.2.1
+name: Seed to Harvest
+version: 1.1
+vendor: Alex Software Development
+build: release
+bbver: 4.6
+wmsdk: Windows Mobile 6 Professional SDK (ARMV4I)
+applog: rholog.txt
+iphone:
+  configuration: Release
+  sdk: iphonesimulator5.0
+  provisionprofile: 
+  codesignidentity: 
+  entitlements: 
+  BundleIdentifier: com.alexsoftwaredevelopment.seedtoharvest
+  BundleURLScheme: seedtoharvest
+  emulatortarget: iphone
+wp:
+  productid: b5a92ec0-0c8a-012f-1355-12313900de37
+symbian:
+  uid: 3811602725
+android:
+  version: 2.1
+extensions:
+  - json
+  - uri
+  - another-extension
+  - rexml
+  - set
+sdk: C:/RhoStudio/ruby/lib/ruby/gems/1.8/gems/rhodes-3.2.3

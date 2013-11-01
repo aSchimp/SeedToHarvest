@@ -1,0 +1,155 @@
+<div data-role="page" id="editSalesRecordPage" name="editSalesRecordPage">
+
+  <div data-role="header" data-position="inline">
+    <h1>Edit Record</h1>
+    <a href="/app/SalesRecord/showByPlantingRecordId/<%= @salesrecord.PlantingRecordId %>" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Cancel
+    </a>
+    <a href="#" onclick='ActionSheet.confirmDelete("<%= url_for :action => :delete, :id => @salesrecord.object %>", "Delete Record");' class="ui-btn-right" data-icon="delete" data-direction="reverse">
+      Delete
+    </a>
+  </div>
+
+  <div data-role="content">
+    <form id="editSalesRecordForm" name="editSalesRecordForm" method="POST" action="<%= url_for :action => :update %>">
+      <input type="hidden" name="id" value="<%= @salesrecord.object %>"/>
+      
+          <div data-role="fieldcontain">
+            <label for="salesrecord[Date]" class="fieldLabel">Date</label>
+            <input type="date" id="salesrecord[Date]" name="salesrecord[Date]" value="<%= Time.parse(@salesrecord.Date).strftime("%Y-%m-%d") %>" placeholder="Date" />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="salesrecord[Amount]" class="fieldLabel">Amount</label>
+            <input type="number" id="salesrecord[Amount]" name="salesrecord[Amount]" value="<%= @salesrecord.Amount %>" <%= placeholder( "Amount" ) %> />
+          </div>
+          
+          <div data-role="fieldcontain">
+            <label for="salesrecord[AmountUnit]" class="fieldLabel">Unit</label>
+            <select id="salesrecord[AmountUnit]" name="salesrecord[AmountUnit]">
+              <% @amountUnits.each do |unit| %>
+                <% if @salesrecord.AmountUnit == unit.UnitNamePlural %>
+                  <option selected="selected">
+                    <%= unit.UnitNamePlural %>
+                  </option>
+                <%else%>
+                  <option>
+                    <%= unit.UnitNamePlural %>
+                  </option>
+                <%end%>
+              <%end%>
+            </select>
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="salesrecord[Price]" class="fieldLabel">Price</label>
+            <input type="number" id="salesrecord[Price]" name="salesrecord[Price]" value="<%= @salesrecord.Price %>" <%= placeholder( "Price" ) %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="salesrecord[Buyer]" class="fieldLabel">Buyer</label>
+            <input type="text" id="salesrecord[Buyer]" name="salesrecord[Buyer]" value="<%= @salesrecord.Buyer %>" <%= placeholder( "Buyer" ) %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="salesrecord[Notes]" class="fieldLabel">Notes</label>
+            <textarea id="salesrecord[Notes]" name="salesrecord[Notes]" <%= placeholder( "Notes" ) %>><%= @salesrecord.Notes %></textarea>
+          </div>
+      
+      <input type="submit" value="Update"/>
+    </form>
+  </div>
+
+    <script type="text/javascript">
+      $(document).delegate("#editSalesRecordPage", 'pageinit', editSalesRecordPageInit);
+                  
+      function editSalesRecordPageInit(event)
+      {
+        $(document).undelegate("#editSalesRecordPage", "pageinit");
+        
+        $("#editSalesRecordForm").submit(editSalesRecordFormSubmit);
+      }
+    
+      function editSalesRecordFormSubmit(e)
+      {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+      
+        var salesAmount = document.forms["editSalesRecordForm"]["salesrecord[Amount]"].value;
+        var salesPrice = document.forms["editSalesRecordForm"]["salesrecord[Price]"].value;
+        var salesBuyer = document.forms["editSalesRecordForm"]["salesrecord[Buyer]"].value;
+        var date = document.forms["editSalesRecordForm"]["salesrecord[Date]"].value;
+        
+        if(salesAmount == null || salesAmount == "")
+        {
+          var title = "Invalid Amount";
+          var message = "Please enter an amount.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        numExp = /^[-+]?[0-9]*\.?[0-9]+$/;
+        if(!numExp.test(salesAmount))
+        {
+          var title = "Invalid Amount";
+          var message = "The amount must be a number.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        if(salesPrice == null || salesPrice == "")
+        {
+          var title = "Invalid Price";
+          var message = "Please enter a sales price.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        //salesPrice = salesPrice.replace(" ", "");
+        //dollarExpression = /^((\$\d*)|(\$\d*\.\d{2})|(\d*)|(\d*\.\d{2}))$/;
+        if(!numExp.test(salesPrice))
+        {
+          var title = "Invalid Price";
+          var message = "The price must be a number.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+
+        //salesPrice = salesPrice.replace('$', '')
+        //document.forms["editSalesRecordForm"]["salesrecord[Price]"].value = salesPrice;
+        
+        if(salesBuyer == null || salesBuyer == "")
+        {
+          var title = "Invalid Buyer";
+          var message = "Please enter a buyer.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        if(date == null || date == "")
+        {
+          var title = "Invalid Date";
+          var message = "Please enter a date.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        dateRegEx = /^\d{4}[-]{1}\d{2}[-]{1}\d{2}$/;
+        if(!dateRegEx.test(date))
+        {
+          var title = "Invalid Date";
+          var message = "Please enter a date in the form of yyyy-mm-dd";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        $.post("/app/SalesRecord/update", $("#editSalesRecordForm").serializeArray(), ajaxCallback);
+      }
+      
+      function ajaxCallback(data)
+      {
+        $.mobile.changePage("/app/SalesRecord/showByPlantingRecordId/<%= @salesrecord.PlantingRecordId %>", {transition: "slide"});
+      }
+    </script>
+</div>

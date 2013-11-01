@@ -1,0 +1,112 @@
+<div data-role="page" id="editPlantingRecordPage" name="editPlantingRecordPage">
+
+  <div data-role="header" data-position="inline">
+    <h1>Edit Record</h1>
+    <a href="/app/PlantingRecord/showByPlantingRecordId/<%= @plantingrecord.PlantingRecordId %>" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Cancel
+    </a>
+    <a href="#" onclick='ActionSheet.confirmDelete("<%= url_for :action => :delete, :id => @plantingrecord.object %>", "Delete Record");' class="ui-btn-right" data-icon="delete" data-direction="reverse">
+      Delete
+    </a>
+  </div>
+
+  <div data-role="content">
+    <form id="editPlantingRecordForm" name="editPlantingRecordForm" method="POST" action="<%= url_for :action => :update %>">
+      <input type="hidden" name="id" value="<%= @plantingrecord.object %>"/>
+      
+        <div data-role="fieldcontain">
+          <label for="plantingrecord[CultivarName]" class="fieldLabel">Cultivar</label>
+          <input type="text" id="plantingrecord[CultivarName]" name="plantingrecord[CultivarName]" value="<%= @plantingrecord.CultivarName %>" <%= placeholder("Cultivar") %> />
+        </div>
+        <div data-role="fieldcontain">
+          <label for="plantingrecord[Location]" class="fieldLabel">Location</label>
+          <input type="text" id="plantingrecord[Location]" name="plantingrecord[Location]" value="<%= @plantingrecord.Location %>" <%= placeholder("Location") %> />
+        </div>
+        <div data-role="fieldcontain">
+          <label for="plantingrecord[Amount]" class="fieldLabel">Amount</label>
+          <input type="text" id="plantingrecord[Amount]" name="plantingrecord[Amount]" value="<%= @plantingrecord.Amount %>" <%= placeholder("Amount") %> />
+        </div>
+        <div data-role="fieldcontain">
+          <label for="plantingrecord[PlantingDate]" class="fieldLabel">Planting Date</label>
+          <input id="plantingrecord[PlantingDate]" name="plantingrecord[PlantingDate]" type="date" value='<%= Time.parse(@plantingrecord.PlantingDate).strftime("%Y-%m-%d") %>' placeholder="Planting Date" />
+        </div>
+        <div data-role="fieldcontain">
+          <label for="plantingrecord[Notes]" class="fieldLabel">Notes</label>
+          <textarea id="plantingrecord[Notes]" name="plantingrecord[Notes]" <%= placeholder("Notes") %> ><%= @plantingrecord.Notes %></textarea>
+        </div>
+                      
+      <input type="submit" value="Update"/>
+    </form>
+  </div>
+
+    <script type="text/javascript">
+      $(document).delegate("#editPlantingRecordPage", 'pageinit', editPlantingRecordPageInit);
+                  
+      function editPlantingRecordPageInit(event)
+      {
+        $(document).undelegate("#editPlantingRecordPage", "pageinit");
+        
+        $("#editPlantingRecordForm").submit(editPlantingRecordFormSubmit);
+      }
+    
+      function editPlantingRecordFormSubmit(e)
+      {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+      
+        var cultivarName = document.forms["editPlantingRecordForm"]["plantingrecord[CultivarName]"].value;
+        var location = document.forms["editPlantingRecordForm"]["plantingrecord[Location]"].value;
+        var amount = document.forms["editPlantingRecordForm"]["plantingrecord[Amount]"].value;
+        var date = document.forms["editPlantingRecordForm"]["plantingrecord[PlantingDate]"].value;
+        
+        if(cultivarName == null || cultivarName == "")
+        {
+          var title = "Invalid Cultivar Name";
+          var message = "Please enter a cultivar name.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        if(location == null || location == "")
+        {
+          var title = "Invalid Location";
+          var message = "Please enter a location.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        if(amount == null || amount == "")
+        {
+          var title = "Invalid Amount";
+          var message = "Please enter an amount.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        if(date == null || date == "")
+        {
+          var title = "Invalid Date";
+          var message = "Please enter a date.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        dateRegEx = /^\d{4}[-]{1}\d{2}[-]{1}\d{2}$/;
+        if(!dateRegEx.test(date))
+        {
+          var title = "Invalid Date";
+          var message = "Please enter a date in the form of yyyy-mm-dd";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        $.post("/app/PlantingRecord/update", $("#editPlantingRecordForm").serializeArray(), ajaxCallback);
+      }
+      
+      function ajaxCallback(data)
+      {
+        $.mobile.changePage("<%= '/app/Crop/showPlantingRecords/' + @@currentlySelectedCropObjectId %>", {transition: "slide"});
+      }
+    </script>
+</div>

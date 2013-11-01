@@ -1,0 +1,104 @@
+<div data-role="page" data-add-back-btn="false">
+
+  <div data-role="header" data-position="inline">
+    <h1><%= @crop.CropName %> - <%= $memoryData.AppSettings.selectedSeasonYear %></h1>
+    <a href="/app/Crop/index" class="ui-btn-left" data-icon="arrow-l" data-direction="reverse">
+      Crops
+    </a>
+    <a href="/app/PlantingRecord/new" class="ui-btn-right" data-icon="plus">
+      New
+    </a>
+  </div>
+
+  <div data-role="content">
+      <% if @plantingRecords.count() == 0 %>
+        <div style="text-align:center;"> No Planting Records </div>
+      <% else %>
+        <ul data-role="listview">
+          <% @plantingRecords.each do |plantingRecord| %>
+            <li id="plantingRecord<%= plantingRecord.PlantingRecordId %>">
+              <a href='/app/PlantingRecord/showByPlantingRecordId/<%= plantingRecord.PlantingRecordId %>'>
+                <h3><%= plantingRecord.CultivarName %></h3>
+                <p><strong>Location:</strong> <%= plantingRecord.Location %>  <strong>Amount:</strong> <%= plantingRecord.Amount %></p>
+                <div class="ui-li-aside" style="font-size: small;">
+                  <% if plantingRecord.PlantingType == 0 %>
+                    Planted: 
+                  <%end%>
+                  <% if plantingRecord.PlantingType == 1 %>
+                    Potted-on: 
+                  <%end%>
+                  <% if plantingRecord.PlantingType == 2 %>
+                    Transplanted: 
+                  <%end%>
+                  <%= Time.at(Time.parse(plantingRecord.PlantingDate)).strftime("%b %-d, %Y") %>
+                </div>
+              </a>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+  </div>
+
+  <script type="text/javascript">
+     
+     var selectedPlantingRecordId = -1;
+     var selectedPlantingRecordType = "";
+     
+     function popupPlantingRecordActionSheet()
+     {
+       ActionSheet.addButton("Add Planting Record", "normal", gotoNewPlantingRecordForm);
+       if(selectedPlantingRecordId > -1)
+       {
+          ActionSheet.addButton("Add Transplanting Record", "normal", function() {});
+       }
+       ActionSheet.addButton("Cancel", "cancel", function(){} );
+       ActionSheet.open();
+     }
+     
+     function gotoNewPlantingRecordForm()
+     {
+       $.post('/app/PlantingRecord/new');
+     }
+     
+     
+     function popupRecordActionSheet()
+     {
+       ActionSheet.addButton("Inputs", "normal", function(){});
+       ActionSheet.addButton("Harvests", "normal", function(){});
+       ActionSheet.addButton("Sales", "normal", function(){});
+       ActionSheet.addButton("Cancel", "cancel", function(){});
+       ActionSheet.open();
+     }
+     
+     function popUpReportActionSheet()
+     {
+       
+     }
+     
+     function onPlantingRecordClick(plantingRecordId)
+     {
+       var c;
+       
+       if(selectedPlantingRecordId > -1)
+       {
+          var oldPlantingRecord = document.getElementById('plantingRecord' + selectedPlantingRecordId);
+          c = oldPlantingRecord.getAttribute('class');
+          c = c.replace("ui-btn-up-b", "ui-btn-up-c");
+          c = c.replace("ui-btn-hover-b", "ui-btn-hover-c");
+          c = c.replace("ui-btn-down-b", "ui-btn-down-c");
+          oldPlantingRecord.setAttribute('class', c);
+          oldPlantingRecord.setAttribute('data-theme', "c");
+       }
+       
+       selectedPlantingRecordId = plantingRecordId;
+       var plantingRecord = document.getElementById('plantingRecord' + plantingRecordId);
+       var c = plantingRecord.getAttribute('class');
+       c = c.replace("ui-btn-up-c", "ui-btn-up-b");
+       c = c.replace("ui-btn-hover-c", "ui-btn-hover-b");
+       c = c.replace("ui-btn-down-c", "ui-btn-down-b");
+       plantingRecord.setAttribute('class', c);
+       plantingRecord.setAttribute('data-theme', "b");
+     }
+  </script>
+      
+</div>

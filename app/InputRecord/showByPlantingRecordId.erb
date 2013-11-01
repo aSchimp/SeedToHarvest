@@ -1,0 +1,58 @@
+<div data-role="page" data-add-back-btn="false">
+
+  <div data-role="header" data-position="inline">
+    <h1>Inputs</h1>
+    <a href="/app/PlantingRecord/showByPlantingRecordId/<%= @plantingRecordId %>" class="ui-btn-left" data-icon="arrow-l" data-direction="reverse">
+      Back
+    </a>
+    <a href="/app/InputRecord/new/<%= @plantingRecordId %>" class="ui-btn-right" data-icon="plus">
+      New
+    </a>
+  </div>
+
+  <div data-role="content">
+    <% if @inputrecords.count() == 0%>
+      <div style="text-align:center;" class="information-container">
+        No inputs 
+        <% if @plantingRecordType == 1 && @earlierInputRecords.count() > 0 %>
+          applied after potting on.
+        <%end%>
+        <% if @plantingRecordType == 2 && @earlierInputRecords.count() > 0 %>
+          applied after transplanting.
+        <%end%>
+      </div>
+    <%else%>
+      <ul data-role="listview">
+         <% @inputrecords.each do |inputRecord| %>
+           <li>
+             <a href="/app/InputRecord/edit/<%= inputRecord.InputRecordId %>">
+               <h1><%= inputRecord.InputDescription %></h1>
+               <p><%= Time.parse(inputRecord.InputDate).strftime("%b %-d, %Y") %></p>
+               <div class="ui-li-aside" style="font-size: small;">
+                 <%= inputRecord.Quantity %>
+               </div>
+             </a>
+           </li>
+         <%end%>
+      </ul>
+    <%end%>
+    <% if @earlierInputRecords.count() > 0 %>
+      <div data-role="collapsible" style="margin-top: 40px;">
+        <h3>
+          Show inputs applied before <%= @plantingRecordType == 1?"potting on." : "transplant." %>
+        </h3>
+        <ul data-role="listview" data-inset="true" >
+          <% @earlierInputRecords.each do |record| %>
+            <li>
+             <a href="/app/InputRecord/edit?id=<%= record.InputRecordId %>&returnPid=<%= @plantingRecordId %>">
+               <h1><%= record.InputDescription %></h1>
+               <p><%= Time.parse(record.InputDate).strftime("%b %-d, %Y") %></p>
+             </a>
+           </li>
+          <%end%>
+        </ul>
+      </div>
+    <%end%>
+  </div>
+
+</div>

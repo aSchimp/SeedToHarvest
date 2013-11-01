@@ -1,0 +1,25 @@
+<div data-role="page">
+
+  <div data-role="header" data-position="inline">
+    <h1>Crop List</h1>
+    <a href='/app/Settings/index' class="ui-btn-left" data-icon="back" data-direction="reverse">Options</a>
+    <a href='/app/Crop/new?returnPage=<%= Rho::RhoSupport.url_encode("/app/Crop/editCropIndex") %>' class="ui-btn-right" data-icon="plus">
+      New
+    </a>
+  </div>
+
+  <div data-role="content">
+    <ul data-role="listview">
+      <% @crops.each do |crop| %>
+      
+          <li>
+            <a href="/app/Crop/edit/<%= crop.object %>">
+              <%= crop.CropName %>
+            </a>
+          </li>
+      
+      <% end %>
+    </ul>
+  </div>
+
+</div>

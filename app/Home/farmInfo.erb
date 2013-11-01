@@ -1,0 +1,107 @@
+<div data-role="page" id="farmInfoPage" name="farmInfoPage">
+
+    <div data-role="header" data-position="inline">
+      <h1>Farm Info</h1>
+      <a href="/app/Home/gotoIndex" class="ui-btn-left" data-icon="back" data-direction="reverse">Farm</a>
+    </div>
+  
+    <div data-role="content" style="">
+        <div class="information-container">
+          Enter the information that you want to appear on reports.
+        </div>
+        <form id="farmInfoForm" name="farmInfoForm" method="POST" action="<%= url_for :action => :updateFarmInfo %>">
+          <div data-role="fieldcontain">
+            <label for="farm[FarmName]" class="fieldLabel">Farm Name</label>
+            <input type="text" id="farm[FarmName]" name="farm[FarmName]" value="<%= @farm.FarmName %>" placeholder="Farm Name" />
+          </div>
+          <div data-role="fieldcontain">
+            <label for="farm[FarmOwner]" class="fieldLabel">Farm Owner</label>
+            <input type="text" id="farm[FarmOwner]" name="farm[FarmOwner]" value="<%= @farm.FarmOwner %>" placeholder="Farm Owner" />
+          </div>
+          <div data-role="fieldcontain">
+            <label for="farm[FarmRecordManager]" class="fieldLabel">Record Manager</label>
+            <input type="text" id="farm[FarmRecordManager]" name="farm[FarmRecordManager]" value="<%= @farm.FarmRecordManager %>" placeholder="Record Manager" />
+          </div>
+          <div data-role="fieldcontain">
+            <label for="farm[FarmAddress1]" class="fieldLabel">Address</label>
+            <input type="text" id="farm[FarmAddress1]" name="farm[FarmAddress1]" value="<%= @farm.FarmAddress1 %>" placeholder="Address Line 1" />
+          </div>
+          <div data-role="fieldcontain">
+            <label for="farm[FarmAddress2]" class="fieldLabel"></label>
+            <input type="text" id="farm[FarmAddress2]" name="farm[FarmAddress2]" value="<%= @farm.FarmAddress2 %>" placeholder="Address Line 2" />
+          </div>
+          <div data-role="fieldcontain">
+            <label for="farm[FarmCity]" class="fieldLabel">City</label>
+            <input type="text" id="farm[FarmCity]" name="farm[FarmCity]" value="<%= @farm.FarmCity %>" placeholder="City" />
+          </div>
+          <div data-role="fieldcontain">
+            <label for="farm[FarmState]" class="fieldLabel">State/Province</label>
+            <input type="text" id="farm[FarmState]" name="farm[FarmState]" value="<%= @farm.FarmState %>" placeholder="State" />
+          </div>
+          <div data-role="fieldcontain">
+            <label for="farm[FarmZipCode]" class="fieldLabel">Zip/Postal Code</label>
+            <input type="text" id="farm[FarmZipCode]" name="farm[FarmZipCode]" value="<%= @farm.FarmZipCode %>" placeholder="Zip Code" />
+          </div>
+          <div data-role="fieldcontain">
+            <label for="farm[FarmEmail]" class="fieldLabel">Email</label>
+            <input type="email" id="farm[FarmEmail]" name="farm[FarmEmail]" value="<%= @farm.FarmEmail %>" placeholder="Email" />
+          </div>
+          <div data-role="fieldcontain">
+            <label for="farm[FarmPhone]" class="fieldLabel">Phone</label>
+            <input type="tel" id="farm[FarmPhone]" name="farm[FarmPhone]" value="<%= @farm.FarmPhone %>" placeholder="Phone" />
+          </div>
+          <div data-role="fieldcontain">
+            <label for="farm[FarmWebsite]" class="fieldLabel">Website</label>
+            <input type="url" id="farm[FarmWebsite]" name="farm[FarmWebsite]" value="<%= @farm.FarmWebsite %>" placeholder="Website" />
+          </div>
+          <div data-role="fieldcontain">
+              <label for='farm[reportIncludeFarmInfo]'>Include this information on every report by default.</label>
+              <%if @farm.reportIncludeFarmInfo == "true"%>
+                <input type="checkbox" id="farm[reportIncludeFarmInfo]" name="farm[reportIncludeFarmInfo]" checked="checked" />
+              <%else%>
+                <input type="checkbox" id="farm[reportIncludeFarmInfo]" name="farm[reportIncludeFarmInfo]" />
+              <%end%>
+          </div>
+          
+          <input type="submit" value="Update" />
+        </form>
+    </div>
+    
+      <script type="text/javascript">
+        $(document).delegate("#farmInfoPage", 'pageinit', farmInfoPageInit);
+                    
+        function farmInfoPageInit(event)
+        {
+          $(document).undelegate("#farmInfoPage", "pageinit");
+          
+          $("#farmInfoForm").submit(farmInfoFormSubmit);
+        } 
+      
+       function farmInfoFormSubmit(e)
+       {
+         e.preventDefault();
+         e.stopPropagation();
+         e.stopImmediatePropagation();
+       
+         var zipCode = document.forms["farmInfoForm"]["farm[FarmZipCode]"].value;
+         if(zipCode != null && zipCode != "")
+         {
+           var regExp =  /(^\d{5}$)|(^\d{5}-\d{4}$)|(^[A-z]\d[A-z](\x20)?\d[A-z]\d$)/i;
+           if(!regExp.test(zipCode))
+           {
+             var title = "Invalid Zip Code";
+             $.post("/app/Home/showAlert?title=" + title);
+             return;
+           }
+         }
+         
+         $.post("/app/Home/updateFarmInfo", $("#farmInfoForm").serializeArray(), ajaxCallback);
+       }
+       
+       function ajaxCallback(data)
+       {
+         $.mobile.changePage("/app/Home/gotoIndex", {transition: "slide", reverse: true});
+       }
+     </script>
+
+</div>

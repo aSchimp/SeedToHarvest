@@ -1,0 +1,94 @@
+<div data-role="page" data-add-back-btn="false">
+
+  <div data-role="header" data-position="inline">
+    <h1><%= @plantingrecord.CultivarName %></h1>
+    <%if $returnToPlantingHistoryOf > -1%>
+      <a href="/app/PlantingRecord/showPlantingHistory/<%= $returnToPlantingHistoryOf %>" onclick="backButtonClick();" class="ui-btn-left" data-icon="arrow-l" data-direction="reverse">
+        History
+      </a>
+    <%else%>
+      <a href="/app/Crop/showPlantingRecords/<%= @@currentlySelectedCropObjectId %>" onclick="backButtonClick();" class="ui-btn-left" data-icon="arrow-l" data-direction="reverse">
+        Back
+      </a>
+    <%end%>
+    <a href="/app/PlantingRecord/edit/<%= @plantingrecord.object %>" class="ui-btn-right" data-icon="star">
+      Edit
+    </a>
+  </div>
+
+  <div data-role="content">
+  
+    <div class="information-container">
+        <div>
+          <% if @plantingrecord.PlantingType == 0 %>
+            Planted on: 
+          <%end%>
+          <% if @plantingrecord.PlantingType == 1 %>
+            Potted-on: 
+          <%end%>
+          <% if @plantingrecord.PlantingType == 2 %>
+            Transplanted on: 
+          <%end%>
+          <%= Time.parse(@plantingrecord.PlantingDate).strftime('%b %-d, %Y') %>
+        </div>
+        <span style="font-size: small; margin-top: 5px;"><strong>Location:</strong> <%= @plantingrecord.Location %>            <strong>Amount:</strong> <%= @plantingrecord.Amount %></span>
+    </div>
+  
+    <div style="height:40px; position:relative; width:100%;">
+      <% if @plantingrecord.PlantingType == 2 %>
+        <div>
+          <a href="/app/PlantingRecord/newTransplantRecord?id=<%= @plantingrecord.PlantingRecordId %>&cultivar=<%= @plantingrecord.CultivarName %>"><button type="button">Transplant</button></a>
+        </div>
+      <% else %>
+        <div style="position: relative; width: 50%; float:left;">
+          <a href="/app/PlantingRecord/newPotOnRecord?id=<%= @plantingrecord.PlantingRecordId %>&cultivar=<%= @plantingrecord.CultivarName %>"><button type="button">Pot-on</button></a>
+        </div>
+        <div style="position: relative; width: 50%; float:right;">
+          <a href="/app/PlantingRecord/newTransplantRecord?id=<%= @plantingrecord.PlantingRecordId %>&cultivar=<%= @plantingrecord.CultivarName %>"><button type="button">Transplant</button></a>
+        </div>
+      <%end%>
+    </div>
+    <ul data-role="listview" data-inset="true">
+      
+          <% if @plantingrecord.ParentRecordId > -1 %>
+            <li>
+              <a href="/app/PlantingRecord/showPlantingHistory/<%= @plantingrecord.PlantingRecordId %>">Planting History</a>
+            </li>
+          <%end%>
+          <li>
+            <a href="/app/InputRecord/showByPlantingRecordId/<%= @plantingrecord.PlantingRecordId %>">Input Records</a>
+          </li>
+          <li>
+            <a href="/app/HarvestRecord/showByPlantingRecordId/<%= @plantingrecord.PlantingRecordId %>">Harvest Records</a>
+          </li>
+          <li>
+            <a href="/app/SalesRecord/showByPlantingRecordId/<%= @plantingrecord.PlantingRecordId %>">Sales Records</a>
+          </li>
+          <li>
+            <a href="/app/MiscRecord/showByPlantingRecordId/<%= @plantingrecord.PlantingRecordId %>">Misc Records</a>
+          </li>
+      
+    </ul>
+    <div>
+      <a href='/app/Report/reportViewer?cropReportType=cultivarReport&plantingRecordId=<%= @plantingrecord.PlantingRecordId %>&returnPage=<%= Rho::RhoSupport.url_encode("/app/PlantingRecord/showByPlantingRecordId/" + @plantingrecord.PlantingRecordId.to_s) %>'>
+        <button type="button">Report</button>
+      </a>
+    </div>
+    <%if @@currentlySelectedCropType == 2 && @plantingrecord.Year < $memoryData.AppSettings.selectedSeasonYear && @plantingrecord.IsActiveRecord == 1 %>
+      <div>
+        <a href="/app/PlantingRecord/removeFromThisYearsRecords/<%= @plantingrecord.PlantingRecordId %>">
+          <button type="button">Remove from this year's records.</button>
+        </a>
+      </div>
+    <%end%>
+    
+  </div>
+  
+  <script type="text/javascript">
+    function backButtonClick()
+    {
+      $.get("/app/PlantingRecord/setReturnToPlantingHistoryOf", {value: "-1"});
+    }
+  </script>
+
+</div>

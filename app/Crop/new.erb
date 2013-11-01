@@ -1,0 +1,75 @@
+<div data-role="page" id="newCropPage" name="newCropPage">
+
+  <div data-role="header" data-position="inline">
+    <h1>New Crop</h1>
+    <a href="<%= @returnPage %>" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Cancel
+    </a>
+  </div>
+
+  <div data-role="content">
+    <form id="newCropForm" name="newCropForm" method="POST" action="<%= url_for :action => :create %>">
+      <input type="hidden" name="id" value="<%= @crop.object %>"/>
+      
+          <div data-role="fieldcontain">
+            <label for="crop[CropName]" class="fieldLabel">Crop Name</label>
+            <input type="text" id="crop[CropName]" name="crop[CropName]" <%= placeholder("Crop Name") %> class="required" />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="crop[CropType]" class="fieldLabel">Crop Type</label>
+            <select id="crop[CropType]" name="crop[CropType]">
+              <option value='0'>Annual</option>
+              <option value='1'>Biennial</option>
+              <option value='2'>Perennial</option>
+            </select>
+          </div>
+      
+
+      <input type="submit" value="Create" />
+    </form>
+  </div>
+  
+  <script type="text/javascript">
+    $(document).delegate("#newCropPage", 'pageinit', newCropPageInit);
+      
+    function newCropPageInit(event)
+    {
+      $(document).undelegate("#newCropPage", "pageinit");
+      
+      $("#newCropForm").submit(newCropFormSubmit);
+    }
+  
+    function newCropFormSubmit(e)
+    {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      
+      var cropName = document.forms["newCropForm"]["crop[CropName]"].value;
+      if(cropName == null || cropName == "")
+      {
+        var title = "Missing Crop Name";
+        var message = "Please enter a crop name.";
+        $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+        return;
+      }
+      
+      $.post("/app/Crop/create", $("#newCropForm").serializeArray(), ajaxCallback);
+    }
+    
+    function ajaxCallback(data)
+    {
+      if(data == "<div>OK</div>")
+      {
+        $.mobile.changePage("<%= @returnPage %>", {transition: "slide"});
+      }
+      else
+      {
+        var title = "Crop Already Exists";
+        $.post("/app/Home/showAlert?title=" + title);
+      }
+    }
+  </script>
+
+</div>

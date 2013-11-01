@@ -1,0 +1,27 @@
+<div data-role="page">
+
+	<div data-role="header" data-position="inline">
+    <h1>Records</h1>
+    <a href="/app/Home/gotoIndex" class="ui-btn-left" data-icon="home" data-direction="reverse" <%= "data-ajax='false'" if is_bb6 %>>
+      Home
+    </a>
+    <a href="/app/GrowingSeason/new" class="ui-btn-right" data-icon="plus">
+      New
+    </a>
+	</div>
+
+  <div data-role="content">
+    <ul data-role="listview">
+      <% @growingseasons.each do |growingseason| %>
+      
+          <li>
+            <a href="<%= url_for :controller => :Home, :action => :changeCurrentYear, :id => growingseason.Year %>">
+              <%= growingseason.Year %> Records
+            </a>
+          </li>
+      
+      <% end %>
+    </ul>
+  </div>
+
+</div>

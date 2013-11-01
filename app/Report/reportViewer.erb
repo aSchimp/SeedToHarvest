@@ -1,0 +1,116 @@
+<div data-role="page" id="reportViewerPage">
+
+  <div data-role="header" data-position="inline">
+    <h1>Create Report</h1>
+    <a id="backButton" href='<%= @returnPage %>' class="ui-btn-left" data-icon="back" data-direction="reverse">Back</a>
+  </div>
+
+  <div data-role="content">
+    <form id="dataForm" name="dataForm">
+      <input type="hidden" id="cropReportType" name="cropReportType" value="<%= @cropReportType %>" />
+      <input type="hidden" id="fieldReportType" name="fieldReportType" value="<%= @fieldReportType %>" />
+      <input type="hidden" id="plantingRecordId" name="plantingRecordId" value="<%= @plantingRecordId %>" />
+      <input type="hidden" id="cropName" name="cropName" value="<%= @cropName %>" />
+      <input type="hidden" id="fieldName" name="fieldName" value="<%= @fieldName %>" />
+      <input type="hidden" id="includeFarmInfo" name="includeFarmInfo" value="<%= @includeFarmInfo %>" />
+      <input type="hidden" id="generateSummary" name="generateSummary" value="<%= @generateSummary %>" />
+    </form>
+    <div class="information-container">
+      <div id="infoDiv">
+        Notice: The data you selected will be sent over the internet to the Seed to Harvest report generation server.
+        <br />
+        <br />
+        By clicking "Continue" you acknowledge that you have read and agree to the
+        <a href="/app/Settings/serviceTerms">Terms and Conditions of Service</a> and 
+        <a href="/app/Settings/privacyPolicy">Privacy Policy</a>.
+      </div>
+      <div id="supportDiv" style="visibility: hidden; height: 0px;">
+        <br />
+        Click <a onclick="supportLinkClick();" id="supportLink" href="#">here</a> to access support.
+      </div>
+    </div>
+    <div id="continueButtonDiv">
+      <button onclick="startGenerateReport();" id="continueButton">Continue</button>
+    </div>
+  </div>
+  
+  <script type="text/javascript">
+      
+      var keepPageInDom = false;
+  
+      $(document).delegate("#reportViewerPage", "pageinit", reportViewerPageInit);
+      
+      function reportViewerPageInit()
+      {
+        $(document).undelegate("#reportViewerPage", "pageinit");
+        
+        $("#reportViewerPage").bind("pagebeforehide", onPageBeforeHide);
+        $("#reportViewerPage").bind("pageremove", onRemovePage);
+      }
+      
+      function onPageBeforeHide(e, ui)
+      {
+        var nextPageId = ui.nextPage.attr("id");
+        if(nextPageId == "serviceTermsPage" || nextPageId == "privacyPolicyPage")
+        {
+          keepPageInDom = true;
+        }
+      }
+      
+      function onRemovePage(e)
+      {
+        if(keepPageInDom)
+        {
+          keepPageInDom = false;
+          e.preventDefault();
+        }
+      }
+  
+      function supportLinkClick()
+      {
+        $.post("/app/Home/openExternalUrl?url=<%= Rho::RhoSupport.url_encode('http://alexsoftwaredevelopment.com/SeedToHarvest/ServiceTroubleshooting.aspx') %>");
+      }
+      
+      function startGenerateReport()
+      {
+        $.mobile.silentScroll(0);
+        $.blockUI({message: '<h1><img src="/public/images/bigLoading.gif" width="60" height="60" /> <br />Generating Report...</h1>'});
+        $("div.ui-page-active #continueButtonDiv").css("visibility", "hidden");
+        $("div.ui-page-active #continueButtonDiv").css("height", "0px");
+        $.get("/app/Report/generateReport", $("div.ui-page-active #dataForm").serializeArray(), reportGenerationCallback);
+      }
+      
+      function reportGenerationCallback(response)
+      {
+         if (response != "<div>OK</div>")
+         {
+           $.unblockUI();
+           $("div.ui-page-active #infoDiv").html("Failed: There was an error processing the report.\n\n Error Type: App Error");
+           $("div.ui-page-active #supportDiv").css("visibility", "visible");
+           $("div.ui-page-active #supportDiv").css("height", "auto");
+         }
+      }
+      
+      function errorHandler(error)
+      {
+        $.unblockUI();
+          
+        $("div.ui-page-active #infoDiv").html("Failed: There was an error processing the report.\n\n HttpErrorCode: " + error);
+        $("div.ui-page-active #supportDiv").css("visibility", "visible");
+        $("div.ui-page-active #supportDiv").css("height", "auto");
+      }
+      
+      function noNetworkHandler()
+      {
+        $.unblockUI();
+        $("div.ui-page-active #infoDiv").html("Error: No internet connection.");
+      }
+      
+      function successHandler()
+      {
+        $.unblockUI();
+        $("div.ui-page-active #infoDiv").html("Success: Report was generated successfully.");
+      }
+  </script>
+
+</div>

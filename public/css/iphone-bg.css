@@ -1,0 +1,11 @@
+.content {
+    background-color: #c5ccd4;
+    background: url('/public/images/pinstripes.png');
+    min-height: 480px;
+}
+
+.ui-content {
+    background-color: #c5ccd4;
+    min-height: 480px;
+    background-image: url(../images/pinstripes.png);
+}

@@ -1,0 +1,118 @@
+<div data-role="page" id="executeRestorePage" name="executeRestorePage">
+
+  <div data-role="header" data-position="inline">
+    <h1>Restore Data</h1>
+    <a href="/app/Home/gotoIndex" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Home
+    </a>
+  </div>
+
+  <div id="contentDiv" data-role="content">
+    <div class="information-container">
+      <div id="infoDiv">
+        <strong>Are you sure?</strong>
+        <br />
+        Continuing will replace all data with the data from the file you uploaded previously.
+        <br />
+        <br />
+        By clicking "Restore" you acknowledge that you have read and agree to the
+        <a href="/app/Settings/serviceTerms">Terms and Conditions of Service</a> and 
+        <a href="/app/Settings/privacyPolicy">Privacy Policy</a>.
+      </div>
+      <div id="supportDiv" style="visibility: hidden; height: 0px;">
+        <br />
+        Click <a onclick="supportLinkClick();" id="supportLink" href="#">here</a> to access support.
+      </div>
+    </div>
+    <form id="executeRestoreForm" name="executeRestoreForm" method="post" action="<%= url_for :action => :executeRestore %>">
+       <input type="hidden" id="backupDataId" name="backupDataId" value="<%= $restoreDataId %>" />
+       
+       <input type="submit" value="Restore" />
+    </form>
+  </div>
+  
+  <script type="text/javascript">
+     var keepPageInDom = false;
+  
+     $(document).delegate("#executeRestorePage", "pageinit", executeRestorePageInit);
+                 
+     function executeRestorePageInit(event)
+     {
+       $(document).undelegate("#executeRestorePage", "pageinit");
+       $("#executeRestoreForm").submit(executeRestoreFormSubmit);
+       
+       $("#executeRestorePage").bind("pagebeforehide", onPageBeforeHide);
+       $("#executeRestorePage").bind("pageremove", onRemovePage);
+     }
+     
+      function onPageBeforeHide(e, ui)
+      {
+        var nextPageId = ui.nextPage.attr("id");
+        if(nextPageId == "serviceTermsPage" || nextPageId == "privacyPolicyPage")
+        {
+          keepPageInDom = true;
+        }
+      }
+      
+      function onRemovePage(e)
+      {
+        if(keepPageInDom)
+        {
+          keepPageInDom = false;
+          e.preventDefault();
+        }
+      }
+   
+     function executeRestoreFormSubmit(e)
+     {
+       e.preventDefault();
+       e.stopPropagation();
+       e.stopImmediatePropagation();
+       
+       $.mobile.silentScroll(0);
+       $.blockUI({message: '<h1><img src="/public/images/bigLoading.gif" width="60" height="60" /> <br />Restoring data...</h1>'});
+       $("#executeRestoreForm").css("height", "0px");
+       $("#executeRestoreForm").css("visibility", "hidden");
+       $.post("/app/Settings/executeRestore", $("#executeRestoreForm").serializeArray(), ajaxCallback);
+     }
+     
+     function ajaxCallback(data)
+     {
+       if(data != "<div>OK</div>")
+       {
+         $.unblockUI();
+         
+         $("div.ui-page-active #infoDiv").html("An error occured while restoring data.");
+         $("div.ui-page-active #supportDiv").css("visibility", "visible");
+         $("div.ui-page-active #supportDiv").css("height", "auto");
+       }
+     }
+     
+     function errorHandler(errorCode)
+     {
+       $.unblockUI();
+       
+       $("div.ui-page-active #infoDiv").html("Failed: There was an error retrieving data from the server.\n\n HttpErrorCode: " + errorCode);
+       $("div.ui-page-active #supportDiv").css("visibility", "visible");
+       $("div.ui-page-active #supportDiv").css("height", "auto");
+     }
+     
+     function noNetworkHandler()
+     {
+       $.unblockUI();
+       $("div.ui-page-active #infoDiv").html("Error: No internet connection.");
+     }
+     
+     function successHandler()
+     {
+       $.unblockUI();
+
+       $("div.ui-page-active #infoDiv").html("Success: Your data has been restored.");
+     }
+     
+     function supportLinkClick()
+     {
+       $.post("/app/Home/openExternalUrl?url=<%= Rho::RhoSupport.url_encode('http://alexsoftwaredevelopment.com/SeedToHarvest/ServiceTroubleshooting.aspx') %>");
+     }
+   </script>
+</div>

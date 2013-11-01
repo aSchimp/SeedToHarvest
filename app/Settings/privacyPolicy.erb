@@ -1,0 +1,154 @@
+<div data-role="page" id="privacyPolicyPage">
+    <style>
+      div.information-container a
+      {
+        font-size: smaller;
+      }
+      
+      h4
+      {
+        margin-bottom: 0px;
+      }
+      h3
+      {
+        font-size:12pt;
+      }
+      p
+      {
+        margin-top: 0px;
+      }
+    </style>
+
+    <div data-role="header" data-position="inline">
+        <h1>
+            Privacy Policy
+        </h1>
+        <a href="#" data-rel="back" class="ui-btn-left" data-icon="back">Back</a>
+    </div>
+    <div data-role="content">
+        <div class="information-container" style="margin-left: -10px; margin-right:-10px; background: White;">
+            <h3>
+                Seed to Harvest Services Privacy Policy
+            </h3>
+            <hr />
+            <h4>
+                Scope of this Privacy Policy
+            </h4>
+            <p>
+                This privacy policy applies to information collected or sent from Seed to Harvest
+                for iPhone/iPod touch to the Seed to Harvest Report Service, the Seed to Harvest
+                Backup Service, or the Seed to Harvest Server(s), and from the Seed to Harvest Restore
+                Data website, accessible at <a onclick="restoreDataLink();" href="#">http://alexsoftwaredevelopment.com/<br />SeedToHarvest/RestoreData.aspx</a>
+                , collectively the "Services".
+            </p>
+            <h4>
+                What information is sent by Seed to Harvest?
+            </h4>
+            <p>
+                Data such as farm records and farm information (which may be personally identifiable
+                information) is sent to the Seed to Harvest server for the purpose of crop/field
+                report generation and also for backup/restore functionality. Data will by no means
+                be sent without your consent. You may also be asked for your email address for the
+                purpose of sending a backup file or crop/field report to you.
+            </p>
+            <h4>
+                What information is sent when you use the Seed to Harvest Restore Data website?
+            </h4>
+            <p>
+                A backup file that you upload through site will be sent to the Seed to Harvest server.
+                This backup file may contain data such as farm records and farm information (which
+                may be personally identifiable information). You will also be asked for an email
+                address that you can access from your iPhone/iPod touch.
+            </p>
+            <h4>
+                What is your information used for?
+            </h4>
+            <p>
+                Your information is used for:
+            </p>
+            <ul>
+                <li>Generating and emailing crop/field reports to you.</li>
+                <li>Sending you backup files of your data.</li>
+                <li>Restoring data from a backup file to the Seed to Harvest app.</li>
+            </ul>
+            <h4>
+                How is your information protected?
+            </h4>
+            <p>
+                A variety of safety measures are implemented to ensure the safety of your information.
+                Secure Socket Layer and other security measures may be used to help prevent unauthorized
+                access to your personally identifiable information. Your information will be removed
+                from the Seed to Harvest server within a reasonable amount of time after use.
+            </p>
+            <h4>
+                Are cookies used?
+            </h4>
+            <p>
+                No, cookies are not used.
+            </p>
+            <h4>
+                Is any information disclosed to outside parties?
+            </h4>
+            <p>
+                Your information will not be sold, traded or otherwise transferred to outside parties.
+                This does not include trusted third parties who assist with operating these Services,
+                conducting business, or servicing you, so long as those parties agree to keep this
+                information confidential. We may also release your information when we believe release
+                is appropriate to comply with the law, to enforce the policies of these services,
+                or to protect ours or others rights, property, or safety.
+            </p>
+            <h4>
+                Terms and Conditions
+            </h4>
+            <p>
+                Please also view the Seed to Harvest Services Terms and Conditions section establishing
+                the use, disclaimers, and limitations of liability governing the use of these Services.
+            </p>
+            <h4>
+                Your Consent
+            </h4>
+            <p>
+                By using the Services, you consent to this privacy policy.
+            </p>
+            <h4>
+                Changes to this Privacy Policy
+            </h4>
+            <p>
+                Any changes to this privacy policy will be posted at:
+                <br />
+                <a onclick="privacyPolicyLink();" href="#">http://alexsoftwaredevelopment.com/<br />
+                    SeedToHarvest/DataServicePrivacyPolicy.aspx</a>
+            </p>
+            <p>
+                This privacy policy was last modified on 02/22/2012.
+            </p>
+            <h4>
+                Contact Us
+            </h4>
+            <p>
+                If there are any questions regarding this privacy policy you may contact us using
+                the information below.
+            </p>
+            <p>
+                <a onclick="alexSoftwareDevelopmentLink();" href="#">http://alexsoftwaredevelopment.com</a><br />
+                <a href="mailto:privacy@alexsoftwaredevelopment.com">privacy@alexsoftwaredevelopment.com</a><br />
+                1-(615) 669-2767
+            </p>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function alexSoftwareDevelopmentLink() {
+            $.post("/app/Home/openExternalUrl?url=<%= Rho::RhoSupport.url_encode('http://alexsoftwaredevelopment.com') %>");
+        }
+
+        function privacyPolicyLink() {
+            $.post("/app/Home/openExternalUrl?url=<%= Rho::RhoSupport.url_encode('http://alexsoftwaredevelopment.com/SeedToHarvest/DataServicePrivacyPolicy.aspx') %>");
+        }
+
+        function restoreDataLink() {
+            $.post("/app/Home/openExternalUrl?url=<%= Rho::RhoSupport.url_encode('http://alexsoftwaredevelopment.com/SeedToHarvest/RestoreData.aspx') %>");
+        }
+    </script>
+
+</div>

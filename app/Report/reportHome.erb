@@ -1,0 +1,144 @@
+<div data-role="page" id="reportHomePage">
+
+    <div data-role="header" data-position="inline">
+      <h1>Create Report</h1>
+      <a href="/app/Home/gotoIndex" class="ui-btn-left" data-icon="back" data-direction="reverse">Home</a>
+    </div>
+  
+    <div data-role="content">
+      <% if (@crops.length > 0 || @fields.length > 0) %>
+        <% if @crops.length > 0 %>
+          <form id="reportOptionsForm" name="reportOptionsForm" method="POST" action="<%= url_for :action => :generateReportFromReportHome %>">
+            <fieldset id="reportType" data-role="controlgroup">
+                <input type="radio" name="radio-choice-1" id="radio-choice-1" value="choice-1" checked="checked" />
+                <label for="radio-choice-1">All Crops</label>
+          
+                <input type="radio" name="radio-choice-1" id="radio-choice-2" value="choice-2"  />
+                <label for="radio-choice-2">Single Crop</label>
+                
+                <input type="radio" name="radio-choice-1" id="radio-choice-3" value="choice-3" />
+                <label for="radio-choice-3">None</label>
+            </fieldset>
+            
+            <div data-role="fieldcontain" id="cropSelectorDiv" style="visibility: hidden; height:0px;">
+              <label for="cropSelector">Crop</label>
+              <select id="cropSelector" name="cropSelector">
+                 <% @crops.each do |crop|%>
+                   <option><%= crop.CropName %></option>
+                 <%end%>
+              </select>
+            </div>
+            
+            <div id="summaryOptionDiv">
+              <label for="summaryOption">Generate summary pages.</label>
+              <input type="checkbox" id="summaryOption" name="summaryOption" />
+            </div>
+          <%end%>
+          
+          <hr />
+          <br />
+          
+          <% if @fields.length > 0 %>
+            <fieldset id="fieldOptions" data-role="controlgroup">
+              <input type="radio" name="radio-choice-2" id="radio-choice-4" value="choice-1" checked="checked" />
+              <label for="radio-choice-4">All Fields</label>
+              
+              <input type="radio" name="radio-choice-2" id="radio-choice-5" value="choice-2" />
+              <label for="radio-choice-5">Single Field</label>
+                      
+              <input type="radio" name="radio-choice-2" id="radio-choice-6" value="choice-3" />
+              <label for="radio-choice-6">None</label>
+            </fieldset>
+            
+            <div data-role="fieldcontain" id="fieldSelectorDiv" style="visibility: hidden; height:0px;">
+              <label for="fieldSelector">Field</label>
+              <select id="fieldSelector" name="fieldSelector">
+                 <% @fields.each do |field|%>
+                   <option><%= field.FieldName %></option>
+                 <%end%>
+              </select>
+            </div>
+          <% end %>
+
+          <label for="includeFarmInfo">Include farm information in report.</label>
+          <% if $memoryData.AppSettings.reportIncludeFarmInfo == "true" %>
+            <input type="checkbox" id="includeFarmInfo" name="includeFarmInfo" checked="checked" />
+          <%else%>
+            <input type="checkbox" id="includeFarmInfo" name="includeFarmInfo" />
+          <%end%>
+          
+          <input type="submit" value="Create Report" />
+        </form>
+      <%else%>
+         <div class="information-container">
+            There are no records in the database.
+         </div>
+      <%end%>
+    </div>
+
+    <script type="text/javascript">
+       $(document).delegate("#reportHomePage", "pageinit", reportHomePageInit);
+       
+       function reportHomePageInit(e)
+       {
+         $(document).undelegate("#reportHomePage", "pageinit");
+         
+         $("#reportOptionsForm").submit(reportOptionsFormSubmit);
+       
+         $("#radio-choice-2").change(function() { 
+           $("#cropSelectorDiv").css("visibility", "visible");
+           $("#cropSelectorDiv").css("height", "auto");
+           
+           $("#summaryOptionDiv").css("visibility", "visible");
+           $("#summaryOptionDiv").css("height", "auto");
+         });
+         
+         $("#radio-choice-1").change(function() {
+           $("#cropSelectorDiv").css("visibility", "hidden");
+           $("#cropSelectorDiv").css("height", "0px");
+           
+           $("#summaryOptionDiv").css("visibility", "visible");
+           $("#summaryOptionDiv").css("height", "auto");
+         });
+         
+         $("#radio-choice-3").change(function () {
+           $("#cropSelectorDiv").css("visibility", "hidden");
+           $("#cropSelectorDiv").css("height", "0px");
+           
+           $("#summaryOptionDiv").css("visibility", "hidden");
+           $("#summaryOptionDiv").css("height", "0px");
+         });
+         
+         $("#radio-choice-4").change(function () {
+           $("#fieldSelectorDiv").css("visibility", "hidden");
+           $("#fieldSelectorDiv").css("height", "0px");
+         });
+         
+         $("#radio-choice-5").change(function () {
+           $("#fieldSelectorDiv").css("visibility", "visible");
+           $("#fieldSelectorDiv").css("height", "auto");
+         });
+         
+         $("#radio-choice-6").change(function () {
+           $("#fieldSelectorDiv").css("visibility", "hidden");
+           $("#fieldSelectorDiv").css("height", "0px");
+         });
+       }
+       
+       function reportOptionsFormSubmit(e)
+       {
+         if($("#radio-choice-3").prop("checked") && $("#radio-choice-6").prop("checked"))
+         {
+           e.preventDefault();
+           e.stopPropagation();
+           e.stopImmediatePropagation();
+
+           var title = "No Data Selected";
+           var message = "Please select data to put on the report.";
+           $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+           return;
+         }
+       }
+    </script>
+    
+</div>

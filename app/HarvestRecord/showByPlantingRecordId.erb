@@ -1,0 +1,39 @@
+<div data-role="page" data-add-back-btn="false">
+
+  <div data-role="header" data-position="inline">
+    <h1>Harvests</h1>
+    <a href="/app/PlantingRecord/showByPlantingRecordId/<%= @plantingRecordId %>" class="ui-btn-left" data-icon="arrow-l" data-direction="reverse">
+      Back
+    </a>
+    <a href="/app/HarvestRecord/new/<%= @plantingRecordId %>" class="ui-btn-right" data-icon="plus">
+      New
+    </a>
+  </div>
+
+  <div data-role="content">
+    <% if @harvestrecords.count() == 0 %>
+      <div style="text-align:center;">
+        No Harvest Records
+      </div>
+    <%else%>
+      <ul data-role="listview">
+        <% @harvestrecords.each do |harvestRecord| %>
+          <li>
+            <a href="/app/HarvestRecord/edit/<%= harvestRecord.HarvestRecordId %>">
+              <h1><%= Time.parse(harvestRecord.HarvestDate).strftime("%b %-d, %Y") %></h1>
+              <p>
+                <%= harvestRecord.HarvestAmount.to_s + " " %>
+                <% if harvestRecord.HarvestAmount == 1 %>
+                   <%= AmountUnit.find(:first, :conditions => {{:name => "UnitNamePlural", :op => "LIKE"} => harvestRecord.HarvestAmountUnit}).UnitName %>
+                <%else%>
+                   <%= harvestRecord.HarvestAmountUnit %>
+                <%end%>
+              </p>
+            </a>
+          </li>
+        <%end%>
+      </ul>
+    <%end%>
+  </div>
+
+</div>

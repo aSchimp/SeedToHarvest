@@ -1,0 +1,73 @@
+<div data-role="page" id="editFieldPage" name="editFieldPage">
+
+  <div data-role="header" data-position="inline">
+    <h1>Edit <%= @field.FieldName %></h1>
+    <a href="/app/Field" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Cancel
+    </a>
+    <a href="#" onclick='ActionSheet.confirmDelete("<%= url_for :action => :delete, :id => @field.object %>", "Delete Field");' class="ui-btn-right" data-icon="delete" data-direction="reverse">
+      Delete
+    </a>
+  </div>
+
+  <div data-role="content">
+    <form id="editFieldForm" name="editFieldForm" method="POST" action="<%= url_for :action => :update %>">
+      <input type="hidden" name="id" value="<%= @field.object %>"/>
+      
+          <div data-role="fieldcontain">
+            <label for="field[FieldName]" class="fieldLabel">Field Name</label>
+            <input type="text" id="field[FieldName]" name="field[FieldName]" value="<%= @field.FieldName %>" <%= placeholder( "Field Name" ) %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="field[FieldDescription]" class="fieldLabel">Description</label>
+            <input type="text" id="field[FieldDescription]" name="field[FieldDescription]" value="<%= @field.FieldDescription %>" <%= placeholder( "Description" ) %> />
+          </div>
+      
+      <input type="submit" value="Update" />
+    </form>
+  </div>
+
+    <script type="text/javascript">
+      $(document).delegate("#editFieldPage", 'pageinit', editFieldPageInit);
+                  
+      function editFieldPageInit(event)
+      {
+        $(document).undelegate("#editFieldPage", "pageinit");
+        
+        $("#editFieldForm").submit(editFieldFormSubmit);
+      }
+    
+      function editFieldFormSubmit(e)
+      {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        var fieldName = document.forms["editFieldForm"]["field[FieldName]"].value;
+        if(fieldName == null || fieldName == "")
+        {
+          var title = "Missing Field Name";
+          var message = "Please enter a field name.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        $.post("/app/Field/update", $("#editFieldForm").serializeArray(), ajaxCallback);
+      }
+      
+      function ajaxCallback(data)
+      {
+        if(data == "<div>OK</div>")
+        {
+          $.mobile.changePage("/app/Field", {transition: "slide"});
+        }
+        else
+        {
+          var title = "Field Already Exists";
+          $.post("/app/Home/showAlert?title=" + title);
+        }
+      }
+    </script>
+  
+</div>

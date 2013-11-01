@@ -1,0 +1,95 @@
+<div data-role="page" id="newFieldRecordPage" name="newFieldRecordPage">
+
+  <div data-role="header" data-position="inline">
+    <h1>New Record</h1>
+    <a href="/app/FieldRecord/showByFieldName/<%= @fieldrecord.FieldName %>" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Cancel
+    </a>
+  </div>
+
+  <div data-role="content">
+    <form id="newFieldRecordForm" name="newFieldRecordForm" method="POST" action="<%= url_for :action => :create %>">
+      <input type="hidden" name="id" value="<%= @fieldrecord.object %>"/>
+      <input type="hidden" id="fieldrecord[FieldRecordId]" name="fieldrecord[FieldRecordId]" value="<%= @fieldrecord.FieldRecordId %>" />
+      <input type="hidden" id="fieldrecord[FieldName]" name="fieldrecord[FieldName]" value="<%= @fieldrecord.FieldName %>" />
+      <input type="hidden" id="fieldrecord[Year]" name="fieldrecord[Year]" value="<%= $memoryData.AppSettings.selectedSeasonYear %>" />
+      
+          <div data-role="fieldcontain">
+            <label for="fieldrecord[Section]" class="fieldLabel">Section</label>
+            <input type="text" id="fieldrecord[Section]" name="fieldrecord[Section]" <%= placeholder("Section") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="fieldrecord[Date]" class="fieldLabel">Date</label>
+            <input type="date" id="fieldrecord[Date]" name="fieldrecord[Date]" value="<%= @fieldrecord.Date %>" <%= placeholder("Date") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="fieldrecord[Description]" class="fieldLabel">Description</label>
+            <textarea id="fieldrecord[Description]" name="fieldrecord[Description]" <%= placeholder("Description") %>></textarea>
+          </div>
+      
+
+      <input type="submit" value="Create" />
+    </form>
+  </div>
+
+    <script type="text/javascript">
+      $(document).delegate("#newFieldRecordPage", 'pageinit', newFieldRecordPageInit);
+                  
+      function newFieldRecordPageInit(event)
+      {
+        $(document).undelegate("#newFieldRecordPage", "pageinit");
+        
+        $("#newFieldRecordForm").submit(newFieldRecordFormSubmit);
+      }
+    
+      function newFieldRecordFormSubmit(e)
+      {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+
+        var fieldRecordSection = document.forms["newFieldRecordForm"]["fieldrecord[Section]"].value;
+        var fieldRecordDescription = document.forms["newFieldRecordForm"]["fieldrecord[Description]"].value;
+        var date = document.forms["newFieldRecordForm"]["fieldrecord[Date]"].value;
+
+        if (fieldRecordSection == null || fieldRecordSection == "")
+        {
+          document.forms["newFieldRecordForm"]["fieldrecord[Section]"].value = "All";
+        }
+        
+        if(fieldRecordDescription == null || fieldRecordDescription == "")
+        {
+          var title = "Invalid Description";
+          var message = "Please enter a description for this record.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        if(date == null || date == "")
+        {
+          var title = "Invalid Date";
+          var message = "Please enter a date.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        dateRegEx = /^\d{4}[-]{1}\d{2}[-]{1}\d{2}$/;
+        if(!dateRegEx.test(date))
+        {
+          var title = "Invalid Date";
+          var message = "Please enter a date in the form of yyyy-mm-dd";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        $.post("/app/FieldRecord/create", $("#newFieldRecordForm").serializeArray(), ajaxCallback);
+      }
+      
+      function ajaxCallback(data)
+      {
+        $.mobile.changePage("/app/FieldRecord/showByFieldName/<%= @fieldrecord.FieldName %>", {transition: "slide"});
+      }
+    </script>
+</div>

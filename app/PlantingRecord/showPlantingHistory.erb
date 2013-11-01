@@ -1,0 +1,41 @@
+<div data-role="page" data-add-back-btn="false">
+
+  <div data-role="header" data-position="inline">
+    <h1><%= @plantingrecord.CultivarName %> - History</h1>
+    <a href="/app/PlantingRecord/showByPlantingRecordId/<%= @plantingrecord.PlantingRecordId %>" class="ui-btn-left" data-icon="arrow-l" data-direction="reverse">
+      Back
+    </a>
+  </div>
+
+  <div data-role="content">
+  
+    <% @plantingRecords.each do |record| %>
+      <div class="information-container" style="margin-bottom: 7px;">
+        <div>
+          <% if record.PlantingType == 0 %>
+            Planted on: 
+          <%end%>
+          <% if record.PlantingType == 1 %>
+            Potted on: 
+          <%end%>
+          <% if record.PlantingType == 2 %>
+            Transplanted on: 
+          <%end%>
+          <%= Time.parse(record.PlantingDate).strftime("%b %-d, %Y") %>
+        </div>
+        <span style="font-size: small; margin-top: 5px;">
+          <strong>Location: </strong><%= record.Location %><strong>  Amount: </strong><%= record.Amount %>
+        </span>
+        <div style="position:absolute; top: 2px; right: 2px;">
+          <span class="btn-small">
+            <a href="/app/PlantingRecord/showByPlantingRecordId?id=<%= record.PlantingRecordId %>&returnToPHid=<%= @plantingrecord.PlantingRecordId %>">
+              <button data-inline="true" data-theme="b">View</button>
+            </a>
+          </span>
+        </div>
+      </div>
+    <%end%>
+    
+  </div>
+
+</div>

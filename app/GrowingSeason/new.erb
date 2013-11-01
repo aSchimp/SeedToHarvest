@@ -1,0 +1,57 @@
+<div data-role="page">
+
+  <div data-role="header" data-position="inline">
+    <h1>New Year</h1>
+    <a href="<%= url_for :action => :index %>" class="ui-btn-left" data-icon="back" data-direction="reverse" onclick="closeYearPicker();">
+      Cancel
+    </a>
+  </div>
+
+  <div data-role="content">
+    <form id="newGrowingSeasonForm" name="newGrowingSeasonForm" method="POST" action="<%= url_for :action => :create %>">
+      <input type="hidden" name="id" value="<%= @growingseason.object %>"/>
+
+      
+          <div data-role="fieldcontain">
+            <label for="growingseason[Year]" class="fieldLabel">Year</label>
+            <select id="growingseason[Year]" name="growingseason[Year]" value="<%= @growingseason.Year %>">
+              <% @years.each do |y| %>
+                <%if y == @growingseason.Year%>
+                  <option selected="selected"><%= y.to_s %></option>
+                <%else%>
+                  <option><%= y.to_s %></option>
+                <%end%>
+              <%end%>
+            </select>
+          </div>
+      
+
+      <input id="submitButton" type="button" onclick="newGrowingSeasonFormSubmit();" value="Create"/>
+    </form>
+  </div>
+  
+      <% unless System::get_property('platform') == 'Blackberry'%>
+        <script type="text/javascript">
+      
+          function newGrowingSeasonFormSubmit()
+          { 
+            $.post("/app/GrowingSeason/create", $("#newGrowingSeasonForm").serializeArray(), ajaxCallback);
+          }
+          
+          function ajaxCallback(data)
+          {
+            if(data == "<div>OK</div>")
+            {
+              $.mobile.changePage("/app/GrowingSeason/index", {transition: "slide"});
+            }
+            else
+            {
+              var title = "Records Already Exist";
+              var message = "Records already exist for the selected year.";
+              $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+            }
+          }
+        </script>
+      <%end%>
+
+</div>

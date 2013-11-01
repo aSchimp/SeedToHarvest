@@ -1,0 +1,39 @@
+<div data-role="page" data-add-back-btn="false">
+
+  <div data-role="header" data-position="inline">
+    <h1>Sales Records</h1>
+    <a href="/app/PlantingRecord/showByPlantingRecordId/<%= @plantingRecordId %>" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Back
+    </a>
+    <a href="/app/SalesRecord/new/<%= @plantingRecordId %>" class="ui-btn-right" data-icon="plus">
+      New
+    </a>
+  </div>
+
+  <div data-role="content">
+    <ul data-role="listview">
+      <% @salesrecords.each do |salesRecord| %>
+         <li>
+           <a href="/app/SalesRecord/edit/<%= salesRecord.SalesRecordId %>">
+             <h3><%= salesRecord.Buyer %></h3>
+             <p>
+               <strong>Amount: </strong>
+                <%= salesRecord.Amount.to_s + " " %>
+                <% if salesRecord.Amount == 1 %>
+                   <%= AmountUnit.find(:first, :conditions => {{:name => "UnitNamePlural", :op => "LIKE"} => salesRecord.AmountUnit}).UnitName %>
+                <%else%>
+                   <%= salesRecord.AmountUnit %>
+                <%end%>
+               <strong> Price: </strong>
+               <%= "$" + format("%.2f", salesRecord.Price) %>
+             </p>
+             <div class="ui-li-aside" style="font-size: small;">
+               <%= Time.parse(salesRecord.Date).strftime("%b %-d, %Y") %>
+             </div>
+           </a>
+         </li>
+      <%end%>
+    </ul>
+  </div>
+
+</div>

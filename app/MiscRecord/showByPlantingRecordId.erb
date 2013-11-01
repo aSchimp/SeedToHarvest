@@ -1,0 +1,38 @@
+<div data-role="page" data-add-back-btn="false">
+
+  <div data-role="header" data-position="inline">
+    <h1>Misc Records</h1>
+    <a href="/app/PlantingRecord/showByPlantingRecordId/<%= @plantingRecordId %>" class="ui-btn-left" data-icon="arrow-l" data-direction="reverse">
+      Back
+    </a>
+    <a href="/app/MiscRecord/new/<%= @plantingRecordId %>" class="ui-btn-right" data-icon="plus">
+      New
+    </a>
+  </div>
+
+  <div data-role="content">
+    <% if @miscrecords.count() == 0 %>
+      <div style="text-align:center;">
+        No Miscellaneous Records
+      </div>
+    <%else%>
+      <ul data-role="listview">
+        <% @miscrecords.each do |mRecord| %>
+          <li>
+            <a href="/app/MiscRecord/edit/<%= mRecord.MiscRecordId %>">
+              <h1><%= Time.parse(mRecord.Date).strftime("%b %-d, %Y") %></h1>
+              <p>
+                <% if(mRecord.Description.length > 40) %>
+                  <%= mRecord.Description[0,40] + "..." %>
+                <%else%>
+                  <%= mRecord.Description %>
+                <%end%>
+              </p>
+            </a>
+          </li>
+        <%end%>
+      </ul>
+    <%end%>
+  </div>
+
+</div>

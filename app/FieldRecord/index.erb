@@ -1,0 +1,33 @@
+<div data-role="page">
+
+	<div data-role="header" data-position="inline">
+    <h1>Field Records</h1>
+    <a href="/app/Home/gotoIndex" class="ui-btn-left" data-icon="back" data-direction="reverse" <%= "data-ajax='false'" if is_bb6 %>>
+      Home
+    </a>
+    <a href="/app/Field/new?returnPage=<%= Rho::RhoSupport.url_encode("/app/FieldRecord") %>" class="ui-btn-right" data-icon="plus">
+      New
+    </a>
+	</div>
+
+  <div data-role="content">
+    <% if @fields.count() < 1 %>
+      <div class="information-container" style="text-align:center;">
+        No fields created yet.
+      </div>
+    <%else%>
+      <ul data-role="listview">
+        <% @fields.each do |field| %>
+        
+            <li>
+              <a href="/app/FieldRecord/showByFieldName/<%= field.FieldName %>">
+                <%= field.FieldName %>
+              </a>
+            </li>
+        
+        <% end %>
+      </ul>
+    <%end%>
+  </div>
+
+</div>

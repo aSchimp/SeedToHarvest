@@ -1,0 +1,104 @@
+<div data-role="page" id="newInputRecordPage" name="newInputRecordPage">
+
+  <div data-role="header" data-position="inline">
+    <h1>New Input</h1>
+    <a href="/app/InputRecord/showByPlantingRecordId/<%= @inputrecord.PlantingRecordId %>" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Cancel
+    </a>
+  </div>
+
+  <div data-role="content">
+    <form id="newInputRecordForm" name="newInputRecordForm" method="POST" action="<%= url_for :action => :create %>">
+      <input type="hidden" name="id" value="<%= @inputrecord.object %>"/>
+      <input type="hidden" id="inputrecord[InputRecordId]" name="inputrecord[InputRecordId]" value="<%= @inputrecord.InputRecordId %>" />
+      <input type="hidden" id="inputrecord[PlantingRecordId]" name="inputrecord[PlantingRecordId]" value="<%= @inputrecord.PlantingRecordId %>" />
+     
+      
+          <div data-role="fieldcontain">
+            <label for="inputrecord[InputDescription]" class="fieldLabel">Input</label>
+            <input type="text" id="inputrecord[InputDescription]" name="inputrecord[InputDescription]" <%= placeholder("Input") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="inputrecord[Quantity]" class="fieldLabel">Quantity</label>
+            <input type="text" id="inputrecord[Quantity]" name="inputrecord[Quantity]" <%= placeholder("Quantity") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="inputrecord[InputDate]" class="fieldLabel">Date</label>
+            <input type="date" id="inputrecord[InputDate]" name="inputrecord[InputDate]" value="<%= @inputrecord.InputDate %>" <%= placeholder("Date") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="inputrecord[Notes]" class="fieldLabel">Notes</label>
+            <textarea id="inputrecord[Notes]" name="inputrecord[Notes]" <%= placeholder("Notes") %> ></textarea>
+          </div>
+      
+
+      <input type="submit" value="Create"/>
+    </form>
+  </div>
+  
+    <script type="text/javascript">
+      $(document).delegate("#newInputRecordPage", 'pageinit', newInputRecordPageInit);
+                  
+      function newInputRecordPageInit(event)
+      {
+        $(document).undelegate("#newInputRecordPage", "pageinit");
+        
+        $("#newInputRecordForm").submit(newInputRecordFormSubmit);
+      }
+    
+      function newInputRecordFormSubmit(e)
+      {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+      
+        var inputDescription = document.forms["newInputRecordForm"]["inputrecord[InputDescription]"].value;
+        var inputAmount = document.forms["newInputRecordForm"]["inputrecord[Quantity]"].value;
+        var date = document.forms["newInputRecordForm"]["inputrecord[InputDate]"].value;
+          
+        if(inputDescription == null || inputDescription == "")
+        {
+          var title = "Invalid Input Name";
+          var message = "Please enter an input name.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        if(inputAmount == null || inputAmount == "")
+        {
+          var title = "Invalid Quantity";
+          var message = "Please enter a quantity.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        if(date == null || date == "")
+        {
+          var title = "Invalid Date";
+          var message = "Please enter a date.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        dateRegEx = /^\d{4}[-]{1}\d{2}[-]{1}\d{2}$/;
+        if(!dateRegEx.test(date))
+        {
+          var title = "Invalid Date";
+          var message = "Please enter a date in the form of yyyy-mm-dd";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        $.post("/app/InputRecord/create", $("#newInputRecordForm").serializeArray(), ajaxCallback);
+      }
+      
+      function ajaxCallback(data)
+      {
+        $.mobile.changePage("/app/InputRecord/showByPlantingRecordId/<%= @inputrecord.PlantingRecordId %>", {transition: "slide"});
+      }
+    </script>
+
+</div>

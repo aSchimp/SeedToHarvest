@@ -1,0 +1,117 @@
+<div data-role="page" id="makeBackupPage" name="makeBackupPage">
+
+  <div data-role="header" data-position="inline">
+    <h1>Backup</h1>
+    <a href="/app/Settings/index" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Options
+    </a>
+  </div>
+
+  <div id="contentDiv" data-role="content">
+    <div class="information-container">
+      <div id="infoDiv">
+         Notice: The data sent to you via email may or may not be sent using an encrypted connection.
+         <br />
+         <br />
+         By clicking "Send Backup" you acknowledge that you have read and agree to the
+         <a href="/app/Settings/serviceTerms">Terms and Conditions of Service</a> and 
+         <a href="/app/Settings/privacyPolicy">Privacy Policy</a>.
+      </div>
+      <div id="supportDiv" style="visibility: hidden; height: 0px;">
+        <br />
+        Click <a onclick="supportLinkClick();" id="supportLink" href="#">here</a> to access support.
+      </div>
+    </div>
+    <form id="makeBackupForm" name="makeBackupForm" method="post" action="<%= url_for :action => :sendBackup %>">
+       <div data-role="fieldcontain">
+         <label for="backupEmail" class="fieldLabel">Email</label>
+         <input type="email" id="backupEmail" name="backupEmail" />
+       </div>
+       
+       <input type="submit" value="Send Backup" />
+    </form>
+  </div>
+  
+  <script type="text/javascript">
+  
+     $(document).delegate("#makeBackupPage", 'pageinit', makeBackupPageInit);
+                 
+     function makeBackupPageInit(event)
+     {
+       $(document).undelegate("#makeBackupPage", "pageinit");
+       
+       $("#makeBackupForm").submit(makeBackupFormSubmit);
+     }
+   
+     function makeBackupFormSubmit(e)
+     {
+       e.preventDefault();
+       e.stopPropagation();
+       e.stopImmediatePropagation();
+       
+       var email = document.forms["makeBackupForm"]["backupEmail"].value;
+       
+       if(email == null || email == "")
+       {
+         var title = "Invalid Email Address";
+         var message = "Please enter an email address.";
+         $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+         return;
+       }
+       
+       emailExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+       if(!emailExp.test(email))
+       {
+          var title = "Invalid Email Address";
+          $.post("/app/Home/showAlert?title=" + title);
+          return;
+       }
+       
+       $("div.ui-page-active #backupEmail").blur();
+       $.mobile.silentScroll(0);
+       $.blockUI({message: '<h1><img src="/public/images/bigLoading.gif" width="60" height="60" /> <br />Sending backup...</h1>'});
+       $("#makeBackupForm").css("height", "0px");
+       $("#makeBackupForm").css("visibility", "hidden");
+       $.post("/app/Settings/sendBackup", $("#makeBackupForm").serializeArray(), ajaxCallback);
+     }
+     
+     function ajaxCallback(data)
+     {
+       if(data != "<div>OK</div>")
+       {
+         $.unblockUI();
+         
+         $("div.ui-page-active #infoDiv").html("An error occured while sending the backup.  The backup file could not be sent.");
+         $("div.ui-page-active #supportDiv").css("visibility", "visible");
+         $("div.ui-page-active #supportDiv").css("height", "auto");
+       }
+     }
+     
+     function errorHandler(errorCode)
+     {
+       $.unblockUI();
+       
+       $("div.ui-page-active #infoDiv").html("Failed: There was an error sending the backup.\n\n HttpErrorCode: " + errorCode);
+       $("div.ui-page-active #supportDiv").css("visibility", "visible");
+       $("div.ui-page-active #supportDiv").css("height", "auto");
+     }
+     
+     function noNetworkHandler()
+     {
+       $.unblockUI();
+       $("div.ui-page-active #infoDiv").html("Error: No internet connection.");
+     }
+     
+     function successHandler()
+     {
+       $.unblockUI();
+
+       $("div.ui-page-active #infoDiv").html("Success: A backup file has been sent to your email address.");
+     }
+     
+     function supportLinkClick()
+     {
+       $.post("/app/Home/openExternalUrl?url=<%= Rho::RhoSupport.url_encode('http://alexsoftwaredevelopment.com/SeedToHarvest/ServiceTroubleshooting.aspx') %>");
+     }
+   </script>
+</div>

@@ -1,0 +1,40 @@
+.information-container
+{
+  position:relative;
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FDFDFD), to(#EEE));
+  -webkit-border-radius: 4px;
+  border: 1px solid;
+  border-color: #AAA;
+  padding: 10px;
+}
+
+span.btn-small .ui-btn span
+{
+  padding-right:5px;
+  padding-left:5px;
+  padding-top:3px;
+  padding-bottom:3px;
+}
+
+span.btn-small
+{
+  font-size: small;
+}
+
+.ui-grid-a > .ui-block-a.main { width: 70%; }
+.ui-grid-a > .ui-block-b.side { width: 30%; }
+
+div.blockMsg {
+    width:  50%;
+    top:    30%;
+    left:   30%;
+    text-align: center;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    -webkit-border-radius: 10px;
+    opacity:1;
+    padding: 15px;
+    color: #000000;
+    font-size: small;
+    font-family: Calibri;
+}

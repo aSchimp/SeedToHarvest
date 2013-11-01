@@ -1,0 +1,109 @@
+<div data-role="page" id="newHarvestRecordPage" name="newHarvestRecordPage">
+
+  <div data-role="header" data-position="inline">
+    <h1>New Record</h1>
+    <a href="/app/HarvestRecord/showByPlantingRecordId/<%= @harvestrecord.PlantingRecordId %>" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Cancel
+    </a>
+  </div>
+
+  <div data-role="content">
+    <form id="newHarvestRecordForm" name="newHarvestRecordForm" method="POST" action="<%= url_for :action => :create %>">
+      <input type="hidden" name="id" value="<%= @harvestrecord.object %>"/>
+      <input type="hidden" id="harvestrecord[HarvestRecordId]" name="harvestrecord[HarvestRecordId]" value="<%= @harvestrecord.HarvestRecordId %>" />      
+      <input type="hidden" id="harvestrecord[PlantingRecordId]" name="harvestrecord[PlantingRecordId]" value="<%= @harvestrecord.PlantingRecordId %>" />
+      
+          <div data-role="fieldcontain">
+            <label for="harvestrecord[HarvestDate]" class="fieldLabel">Harvest Date</label>
+            <input type="date" id="harvestrecord[HarvestDate]" name="harvestrecord[HarvestDate]" value="<%= @harvestrecord.HarvestDate %>" <%= placeholder("Harvest Date") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="harvestrecord[HarvestAmount]" class="fieldLabel">Amount</label>
+            <input type="number" id="harvestrecord[HarvestAmount]" name="harvestrecord[HarvestAmount]" <%= placeholder("Amount") %> />
+          </div>
+          
+          <div data-role="fieldcontain">
+            <label for="harvestrecord[HarvestAmountUnit]" class="fieldLabel">Unit</label>
+            <select id="harvestrecord[HarvestAmountUnit]" name="harvestrecord[HarvestAmountUnit]">
+              <% @amountUnits.each do |unit| %>
+                <option>
+                  <%= unit.UnitNamePlural %>
+                </option>
+              <%end%>
+            </select>
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="harvestrecord[Notes]" class="fieldLabel">Notes</label>
+            <textarea id="harvestrecord[Notes]" name="harvestrecord[Notes]" <%= placeholder("Notes") %>></textarea>
+          </div>
+      
+
+      <input type="submit" value="Create"/>
+    </form>
+  </div>
+  
+    <script type="text/javascript">
+      $(document).delegate("#newHarvestRecordPage", 'pageinit', newHarvestRecordPageInit);
+                  
+      function newHarvestRecordPageInit(event)
+      {
+        $(document).undelegate("#newHarvestRecordPage", "pageinit");
+        
+        $("#newHarvestRecordForm").submit(newHarvestRecordFormSubmit);
+      }
+    
+      function newHarvestRecordFormSubmit(e)
+      {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        var harvestAmount = document.forms["newHarvestRecordForm"]["harvestrecord[HarvestAmount]"].value;
+        var date = document.forms["newHarvestRecordForm"]["harvestrecord[HarvestDate]"].value;  
+        
+        if(harvestAmount == null || harvestAmount == "")
+        {
+          var title = "Invalid Harvest Amount";
+          var message = "Please enter a harvest amount for this record.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        numExp = /^[-+]?[0-9]*\.?[0-9]+$/;
+        if(!numExp.test(harvestAmount))
+        {
+          var title = "Invalid Harvest Amount";
+          var message = "Harvest amount must be a number.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        if(date == null || date == "")
+        {
+          var title = "Invalid Date";
+          var message = "Please enter a date.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        dateRegEx = /^\d{4}[-]{1}\d{2}[-]{1}\d{2}$/;
+        if(!dateRegEx.test(date))
+        {
+          var title = "Invalid Date";
+          var message = "Please enter a date in the form of yyyy-mm-dd";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        $.post("/app/HarvestRecord/create", $("#newHarvestRecordForm").serializeArray(), ajaxCallback);
+      }
+      
+      function ajaxCallback(data)
+      {
+        $.mobile.changePage("/app/HarvestRecord/showByPlantingRecordId/<%= @harvestrecord.PlantingRecordId %>", {transition: "slide"});
+      }
+    </script>
+
+</div>

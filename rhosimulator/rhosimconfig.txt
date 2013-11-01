@@ -1,0 +1,7 @@
+rhodes_path='C:/RhoStudio/ruby/lib/ruby/gems/1.8/gems/rhodes-3.2.3'
+app_name='Seed to Harvest'
+reload_app_changes=1
+debug_port=
+debug_host='127.0.0.1'
+platform='iphone'
+ext_path=C:/RhoStudio/ruby/lib/ruby/gems/1.8/gems/rhodes-3.2.3/lib/extensions/json;C:/RhoStudio/ruby/lib/ruby/gems/1.8/gems/rhodes-3.2.3/lib/extensions/uri;C:/RhoStudio/ruby/lib/ruby/gems/1.8/gems/rhodes-3.2.3/lib/extensions/rexml;C:/RhoStudio/ruby/lib/ruby/gems/1.8/gems/rhodes-3.2.3/lib/extensions/set;

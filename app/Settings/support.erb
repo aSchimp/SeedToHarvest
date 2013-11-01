@@ -1,0 +1,24 @@
+<div data-role="page">
+  <div data-role="header" data-position="inline">
+    <h1>Support</h1>
+    <a href="/app/Settings/index" class="ui-btn-left" data-icon="back" data-direction="reverse">Options</a>
+  </div>
+  
+  <div data-role="content">
+    <ul data-role="listview" data-inset="true">
+      <li>
+        <a href="#" onclick="supportWebsiteLink();">
+          Support Website
+        </a>
+      </li>
+      <li><a href="mailto:support@alexsoftwaredevelopment.com">Email Support</a></li>
+    </ul>
+  </div>
+  
+  <script type="text/javascript">
+    function supportWebsiteLink()
+    {
+      $.post("/app/Home/openExternalUrl?url=<%= Rho::RhoSupport.url_encode('http://alexsoftwaredevelopment.com/SeedToHarvest/Support.aspx') %>");
+    }
+  </script>
+</div>

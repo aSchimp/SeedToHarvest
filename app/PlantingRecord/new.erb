@@ -1,0 +1,119 @@
+<div data-role="page" id="newPlantingRecordPage" name="newPlantingRecordPage">
+
+  <div data-role="header" data-position="inline">
+    <h1>New Record</h1>
+    <a href="<%= '/app/Crop/showPlantingRecords/' + @@currentlySelectedCropObjectId %>" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Cancel
+    </a>
+  </div>
+
+  <div data-role="content">
+    <form id="newPlantingRecordForm" name="newPlantingRecordForm" method="POST" action="<%= url_for :action => :create %>">
+      <input type="hidden" id="id" name="id" value="<%= @plantingrecord.object %>"/>
+      <input type="hidden" id="plantingrecord[CropName]" name="plantingrecord[CropName]" value="<%= @@currentlySelectedCropName %>" />
+      <input type="hidden" id="plantingrecord[PlantingRecordId]" name="plantingrecord[PlantingRecordId]" value="<%= @newPlantingRecordId %>" />
+      <input type="hidden" id="plantingrecord[ParentRecordId]" name="plantingrecord[ParentRecordId]" value="-1" />
+      <input type="hidden" id="plantingrecord[Year]" name="plantingrecord[Year]" value="<%= $memoryData.AppSettings.selectedSeasonYear %>" />
+      <input type="hidden" id="plantingrecord[IsActiveRecord]" name="plantingrecord[IsActiveRecord]" value="1" />
+      <input type="hidden" id="plantingrecord[PlantingType]" name="plantingrecord[PlantingType]" value="0" />
+      <%if @@currentlySelectedCropType == 2%>
+        <input type="hidden" id="plantingrecord[PerennielClosingYear]" name="plantingrecord[PerennielClosingYear]" value="<%= Time.new().year + 1000 %>" />
+      <%end%>
+      
+          <div data-role="fieldcontain">
+            <label for="plantingrecord[CultivarName]" class="fieldLabel">Cultivar</label>
+            <input type="text" id="plantingrecord[CultivarName]" name="plantingrecord[CultivarName]" placeholder='Cultivar' />
+          </div>
+          <div data-role="fieldcontain">
+            <label for="plantingrecord[Location]" class="fieldLabel">Location</label>
+            <input type="text" id="plantingrecord[Location]" name="plantingrecord[Location]" placeholder="Location" />
+          </div>
+          <div data-role="fieldcontain">
+            <label for="plantingrecord[Amount]" class="fieldLabel">Amount</label>
+            <input type="text" id="plantingrecord[Amount]" name="plantingrecord[Amount]" placeholder="Amount" />
+          </div>
+          <div data-role="fieldcontain">
+            <label for="plantingrecord[PlantingDate]" class="fieldLabel">Planting Date</label>
+            <input type="date" id="plantingrecord[PlantingDate]" name="plantingrecord[PlantingDate]" value="<%= @plantingrecord.PlantingDate %>" placeholder="Planting Date" />
+          </div>
+          <div data-role="fieldcontain">
+            <label for="plantingrecord[Notes]" class="fieldLabel">Notes</label>
+            <textarea id="plantingrecord[Notes]" name="plantingrecord[Notes]" placeholder="Notes" ></textarea>
+          </div>
+      
+
+      <input type="submit" value="Create" />
+    </form>
+  </div>
+  
+    <script type="text/javascript">
+      $(document).delegate("#newPlantingRecordPage", 'pageinit', newPlantingRecordPageInit);
+                  
+      function newPlantingRecordPageInit(event)
+      {
+        $(document).undelegate("#newPlantingRecordPage", "pageinit");
+        
+        $("#newPlantingRecordForm").submit(newPlantingRecordFormSubmit);
+      }
+    
+      function newPlantingRecordFormSubmit(e)
+      {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+      
+        var cultivarName = document.forms["newPlantingRecordForm"]["plantingrecord[CultivarName]"].value;
+        var location = document.forms["newPlantingRecordForm"]["plantingrecord[Location]"].value;
+        var amount = document.forms["newPlantingRecordForm"]["plantingrecord[Amount]"].value;
+        var date = document.forms["newPlantingRecordForm"]["plantingrecord[PlantingDate]"].value;
+        
+        if(cultivarName == null || cultivarName == "")
+        {
+          var title = "Invalid Cultivar Name";
+          var message = "Please enter a cultivar name.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        if(location == null || location == "")
+        {
+          var title = "Invalid Location";
+          var message = "Please enter a location.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        if(amount == null || amount == "")
+        {
+          var title = "Invalid Amount";
+          var message = "Please enter an amount.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        if(date == null || date == "")
+        {
+          var title = "Invalid Date";
+          var message = "Please enter a date.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        dateRegEx = /^\d{4}[-]{1}\d{2}[-]{1}\d{2}$/;
+        if(!dateRegEx.test(date))
+        {
+          var title = "Invalid Date";
+          var message = "Please enter a date in the form of yyyy-mm-dd";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        $.post("/app/PlantingRecord/create", $("#newPlantingRecordForm").serializeArray(), ajaxCallback);
+      }
+      
+      function ajaxCallback(data)
+      {
+        $.mobile.changePage("<%= '/app/Crop/showPlantingRecords/' + @@currentlySelectedCropObjectId %>", {transition: "slide"});
+      }
+    </script>
+</div>

@@ -1,0 +1,14 @@
+<div data-role="page">
+
+	<div data-role="header" data-position="inline">
+    <h1>Options</h1>
+    <a href="/app/Home/gotoIndex" class="ui-btn-left" data-icon="back" data-direction="reverse" <%= "data-ajax='false'" if is_bb6 %>>
+      Back
+    </a>
+	</div>
+
+  <div data-role="content">
+    <%= @appsettings.selectedSeasonYear %>
+  </div>
+
+</div>

@@ -1,0 +1,83 @@
+<div data-role="page" id="editAmountUnitPage" name="editAmountUnitPage">
+
+  <div data-role="header" data-position="inline">
+    <h1>Edit Unit</h1>
+    <a href="/app/AmountUnit/index" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Cancel
+    </a>
+    <a href="#" onclick='ActionSheet.confirmDelete("<%= url_for :action => :delete, :id => @amountunit.object %>", "Delete Unit");' class="ui-btn-right" data-icon="delete" data-direction="reverse">
+      Delete
+    </a>
+  </div>
+
+  <div data-role="content">
+    <form id="editAmountUnitForm" name="editAmountUnitForm" method="POST" action="<%= url_for :action => :update %>">
+      <input type="hidden" name="id" value="<%= @amountunit.object %>"/>
+      
+        <div data-role="fieldcontain">
+          <label for="amountunit[UnitName]" class="fieldLabel">Unit Name</label>
+          <input type="text" id="amountunit[UnitName]" name="amountunit[UnitName]" value="<%= @amountunit.UnitName %>" <%= placeholder("Unit Name") %> />
+        </div>
+        <div data-role="fieldcontain">
+            <label for="amountunit[UnitNamePlural]" class="fieldLabel">Plural</label>
+            <input type="text" id="amountunit[UnitNamePlural]" name="amountunit[UnitNamePlural]" value="<%= @amountunit.UnitNamePlural %>" <%= placeholder("Plural") %> />
+        </div>
+      
+      <input type="submit" value="Update"/>
+    </form>
+  </div>
+  
+    <script type="text/javascript">
+      $(document).delegate("#editAmountUnitPage", 'pageinit', editAmountUnitPageInit);
+                  
+      function editAmountUnitPageInit(event)
+      {
+        $(document).undelegate("#editAmountUnitPage", "pageinit");
+        
+        $("#editAmountUnitForm").submit(editAmountUnitFormSubmit);
+      }
+    
+       function editAmountUnitFormSubmit(e)
+       {
+         e.preventDefault();
+         e.stopPropagation();
+         e.stopImmediatePropagation();
+         
+         var unitName = document.forms["editAmountUnitForm"]["amountunit[UnitName]"].value;
+         var unitNamePlural = document.forms["editAmountUnitForm"]["amountunit[UnitNamePlural]"].value;
+         
+         if(unitName == null || unitName == "")
+         {
+           var title = "Missing Unit Name";
+           var message = "Please enter a unit name.";
+           $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+           return;
+         }
+         
+         if(unitNamePlural == null || unitNamePlural == "")
+         {
+           var title = "Missing Unit Name";
+           var message = "Please enter the plural form of the unit.";
+           $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+           return;
+         }
+         
+         $.post("/app/AmountUnit/update", $("#editAmountUnitForm").serializeArray(), ajaxCallback);
+       }
+       
+       function ajaxCallback(data)
+       {
+         if(data == "<div>OK</div>")
+         {
+           $.mobile.changePage("/app/AmountUnit/index", {transition: "slide"});
+         }
+         else
+         {
+           var title = "Unit Already Exists";
+           $.post("/app/Home/showAlert?title=" + title);
+         }
+       }
+     </script>
+
+
+</div>

@@ -1,0 +1,33 @@
+<div data-role="page">
+  <div data-role="header" data-position="inline">
+    <h1>Seed to Harvest</h1>
+  </div>
+  <div data-role="content">
+    <div class="information-container">
+      If you are upgrading from Seed to Harvest Lite, you may want to view the Upgrade Guide to learn how to
+      transfer your records from the Lite version.
+    </div>
+    <div>
+      <ul data-role="listview" data-inset="true">
+        <li><a onclick="quickStartClick();" href="#">Getting Started Guide</a></li>
+        <li><a onclick="upgradeGuideClick();" href="#">Upgrade Guide</a></li>
+      </ul>
+      
+      <ul data-role="listview" data-inset="true">
+        <li><a href="/app/Home/gotoIndex">Continue</a></li>
+      </ul>
+    </div>
+  </div>
+  
+  <script type="text/javascript">
+    function quickStartClick()
+    {
+      $.post("/app/Home/openExternalUrl?url=<%= Rho::RhoSupport.url_encode('http://alexsoftwaredevelopment.com/SeedToHarvest/QuickStartGuide.aspx') %>");
+    }
+    
+    function upgradeGuideClick()
+    {
+      $.post("/app/Home/openExternalUrl?url=<%= Rho::RhoSupport.url_encode('http://alexsoftwaredevelopment.com/SeedToHarvest/UpgradeGuide.aspx') %>");
+    }
+  </script>
+</div>

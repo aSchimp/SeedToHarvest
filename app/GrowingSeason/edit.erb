@@ -1,0 +1,55 @@
+<div data-role="page">
+
+  <div data-role="header" data-position="inline">
+    <h1>Edit Year</h1>
+    <a href="<%= url_for :action => :show, :id => @growingseason.object %>" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Cancel
+    </a>
+    <a href="#" onclick='ActionSheet.confirmDelete("<%= url_for :action => :delete, :id => @growingseason.object %>", "Delete Records");' class="ui-btn-right" data-icon="delete" data-direction="reverse">
+      Delete
+    </a>
+  </div>
+
+  <div data-role="content">
+    <form id="editGrowingSeasonForm" name="editGrowingSeasonForm" method="POST" action="<%= url_for :action => :update %>">
+      <input type="hidden" name="id" value="<%= @growingseason.object %>"/>
+      
+          <div data-role="fieldcontain">
+            <label for="growingseason[Year]" class="fieldLabel">Year</label>
+              <select id="growingseason[Year]" name="growingseason[Year]" value="<%= @growingseason.Year %>">
+                <% @years.each do |y| %>
+                  <%if y == @growingseason.Year%>
+                    <option selected="selected"><%= y.to_s %></option>
+                  <%else%>
+                    <option><%= y.to_s %></option>
+                  <%end%>
+                <%end%>
+              </select>
+          </div>
+      
+      <input type="button" onclick="editGrowingSeasonFormSubmit();" value="Update"/>
+    </form>
+  </div>
+  
+  <script type="text/javascript">
+    function newGrowingSeasonFormSubmit()
+    { 
+      $.post("/app/GrowingSeason/update", $("#editGrowingSeasonForm").serializeArray(), ajaxCallback);
+    }
+    
+    function ajaxCallback(data)
+    {
+      if(data == "<div>OK</div>")
+      {
+        $.mobile.changePage("/app/GrowingSeason/index", {transition: "slide"});
+      }
+      else
+      {
+        var title = "Records Already Exist";
+        var message = "Records already exist for the selected year.";
+        $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+      }
+    }
+  </script>
+
+</div>

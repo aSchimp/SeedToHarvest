@@ -1,0 +1,40 @@
+<div data-role="page">
+
+  <div data-role="header" data-position="inline">
+    <h1>Restore Data</h1>
+    <a href="/app/Settings/index" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Options
+    </a>
+  </div>
+
+  <div data-role="content">
+    <div class="information-container">
+      Follow the instructions below to restore data from a previous backup.
+      <br />
+      <br />
+      <ol>
+        <li>
+          <p>
+            On your computer, open a web browser.  Navigate to<br /><br />
+            <strong>
+              <small>
+                http://alexsoftwaredevelopment.com/<br />SeedToHarvest/RestoreData.aspx
+              </small>
+            </strong>
+          </p>
+        </li>
+        <li>
+           Enter the following access code and click continue.
+           <br />
+           <br />
+           <strong style="padding-left: 10px;"><%= @accessCode %></strong>
+           <br />
+           <br />
+        </li>
+        <li>
+          Follow the instructions on the web page to upload your backup file and initiate the restore process.
+        </li>
+      </ol>
+    </div>
+  </div>
+</div>

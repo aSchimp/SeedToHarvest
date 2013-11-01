@@ -1,0 +1,72 @@
+<div data-role="page" id="newFieldPage" name="newFieldPage">
+
+  <div data-role="header" data-position="inline">
+    <h1>New Field</h1>
+    <a href="<%= @returnPage %>" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Cancel
+    </a>
+  </div>
+
+  <div data-role="content">
+    <form id="newFieldForm" name="newFieldForm" method="POST" action="<%= url_for :action => :create %>">
+      <input type="hidden" name="returnPage" value="<%= @returnPage %>" />
+      <input type="hidden" name="id" value="<%= @field.object %>"/>
+
+      
+          <div data-role="fieldcontain">
+            <label for="field[FieldName]" class="fieldLabel">Field Name</label>
+            <input type="text" id="field[FieldName]" name="field[FieldName]" <%= placeholder("Field Name") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="field[FieldDescription]" class="fieldLabel">Description</label>
+            <input type="text" id="field[FieldDescription]" name="field[FieldDescription]" <%= placeholder("Description") %> />
+          </div>
+
+      <input type="submit" value="Create" />
+    </form>
+  </div>
+  
+    <script type="text/javascript">
+      $(document).delegate("#newFieldPage", 'pageinit', newFieldPageInit);
+            
+      function newFieldPageInit(event)
+      {
+        $(document).undelegate("#newFieldPage", "pageinit");
+        
+        $("#newFieldForm").submit(newFieldFormSubmit);
+      }
+    
+      function newFieldFormSubmit(e)
+      {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        var fieldName = document.forms["newFieldForm"]["field[FieldName]"].value;
+        if(fieldName == null || fieldName == "")
+        {
+          var title = "Missing Field Name";
+          var message = "Please enter a field name.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        $.post("/app/Field/create", $("#newFieldForm").serializeArray(), ajaxCallback);
+      }
+      
+      function ajaxCallback(data)
+      {
+        if(data == "<div>OK</div>")
+        {
+          $.mobile.changePage("<%= @returnPage %>", {transition: "slide"});
+        }
+        else
+        {
+          var title = "Field Already Exists";
+          $.post("/app/Home/showAlert?title=" + title);
+        }
+      }
+    </script>
+
+</div>

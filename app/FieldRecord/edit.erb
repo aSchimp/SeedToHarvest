@@ -1,0 +1,95 @@
+<div data-role="page" id="editFieldRecordPage" name="editFieldRecordPage">
+
+  <div data-role="header" data-position="inline">
+    <h1>Edit Record</h1>
+    <a href="/app/FieldRecord/showByFieldName/<%= @fieldrecord.FieldName %>" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Cancel
+    </a>
+    <a href="#" onclick='ActionSheet.confirmDelete("<%= url_for :action => :delete, :id => @fieldrecord.object %>", "Delete Record");' class="ui-btn-right" data-icon="delete" data-direction="reverse">
+      Delete
+    </a>
+  </div>
+
+  <div data-role="content">
+    <form id="editFieldRecordForm" name="editFieldRecordForm" method="POST" action="<%= url_for :action => :update %>">
+      <input type="hidden" name="id" value="<%= @fieldrecord.object %>"/>
+      
+          <div data-role="fieldcontain">
+            <label for="fieldrecord[Section]" class="fieldLabel">Section</label>
+            <input type="text" id="fieldrecord[Section]" name="fieldrecord[Section]" value="<%= @fieldrecord.Section %>" <%= placeholder( "Section" ) %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="fieldrecord[Date]" class="fieldLabel">Date</label>
+            <input type="date" id="fieldrecord[Date]" name="fieldrecord[Date]" value="<%= Time.parse(@fieldrecord.Date).strftime("%Y-%m-%d") %>" <%= placeholder( "Date" ) %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="fieldrecord[Description]" class="fieldLabel">Description</label>
+            <textarea id="fieldrecord[Description]" name="fieldrecord[Description]" <%= placeholder( "Description" ) %>><%= @fieldrecord.Description %></textarea>
+          </div>
+      
+      <input type="submit" value="Update" />
+    </form>
+  </div>
+  
+    <script type="text/javascript">
+      $(document).delegate("#editFieldRecordPage", 'pageinit', editFieldRecordPageInit);
+                        
+      function editFieldRecordPageInit(event)
+      {
+        $(document).undelegate("#editFieldRecordPage", "pageinit");
+        
+        $("#editFieldRecordForm").submit(editFieldRecordFormSubmit);
+      }
+    
+      function editFieldRecordFormSubmit(e)
+      {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        var fieldRecordSection = document.forms["editFieldRecordForm"]["fieldrecord[Section]"].value;
+        var fieldRecordDescription = document.forms["editFieldRecordForm"]["fieldrecord[Description]"].value;
+        var date = document.forms["editFieldRecordForm"]["fieldrecord[Date]"].value;
+
+        if (fieldRecordSection == null || fieldRecordSection == "")
+        {
+          document.forms["editFieldRecordForm"]["fieldrecord[Section]"].value = "All";
+        }
+        
+        if(fieldRecordDescription == null || fieldRecordDescription == "")
+        {
+          var title = "Invalid Description";
+          var message = "Please enter a description for this record.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        if(date == null || date == "")
+        {
+          var title = "Invalid Date";
+          var message = "Please enter a date.";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        dateRegEx = /^\d{4}[-]{1}\d{2}[-]{1}\d{2}$/;
+        if(!dateRegEx.test(date))
+        {
+          var title = "Invalid Date";
+          var message = "Please enter a date in the form of yyyy-mm-dd";
+          $.post("/app/Home/showAlert?title=" + title + "&message=" + message);
+          return;
+        }
+        
+        $.post("/app/FieldRecord/update", $("#editFieldRecordForm").serializeArray(), ajaxCallback);
+      }
+      
+      function ajaxCallback(data)
+      {
+        $.mobile.changePage("/app/FieldRecord/showByFieldName/<%= @fieldrecord.FieldName %>", {transition: "slide"});
+      }
+    </script>
+
+</div>

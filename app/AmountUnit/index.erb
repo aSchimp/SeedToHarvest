@@ -1,0 +1,27 @@
+<div data-role="page">
+
+	<div data-role="header" data-position="inline">
+    <h1>Amount Units</h1>
+    <a href="<%= @returnPage %>" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Options
+    </a>
+    <a href="<%= url_for :action => :new %>" class="ui-btn-right" data-icon="plus">
+      New
+    </a>
+	</div>
+
+  <div data-role="content">
+    <ul data-role="listview">
+      <% @amountunits.each do |amountunit| %>
+      
+          <li>
+            <a href="<%= url_for :action => :edit, :id => amountunit.object %>">
+              <%= amountunit.UnitNamePlural %>
+            </a>
+          </li>
+      
+      <% end %>
+    </ul>
+  </div>
+
+</div>
