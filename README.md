@@ -1,4 +1,4 @@
-Seed To Harvest
+Seed to Harvest
 =============
 
 A cross-platform mobile app for crop records - designed with the organic farmer in mind.
